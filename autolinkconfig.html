@@ -1,0 +1,461 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+	<link rel="icon" type="image/x-icon"  href="favicon.ico" mce_href="favicon.ico">
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="blogdraft02.js"></script>
+
+  <link type="text/css" rel="stylesheet" href= "blogdraft1.css">
+  
+<title>AutoLinker and Favorites</title>
+
+<style>
+	p{
+		font-family:Geneva,Arial;
+	}
+span.left {
+position: absolute;
+left: 0;
+}
+span.right {
+position: absolute;
+right: 0;
+}
+#thetable{
+	
+}
+.rowclass{
+	border-bottom-style:solid;
+	border-bottom-width:1px;
+}
+.inputtextclass{
+	height: 15px;
+}
+.autolinktableheader {
+	background-color:yellow;
+}
+
+</style>
+
+<script>
+	
+function readFile(){
+	
+	// make save button visible
+	document.getElementById("controls").style.display="block";
+	
+  $.ajax({
+        type: "POST",
+        url: "readfavorites.php",
+        async: false,
+        success: function(expresult){
+            faveslist = expresult;
+            //alert("expansionslist in jquery ajax= " + expansionslist);
+        },
+        error: function(){
+            //alert('Error reading blogdraft_expansions.txt');
+        }
+    })
+    
+    
+    // create array
+    var favestemp = new Array();
+    if (faveslist) {
+        favestemp = faveslist.split("\n");
+    }
+	
+	// create table
+	var tablediv = document.getElementById("a");
+	a.innerHTML = ""; // clear it
+	var tbl     = document.createElement("table");
+	tablediv.appendChild(tbl);
+	tbl.setAttribute("id", "thetable");
+	tbl.setAttribute("width","90%");
+	// set headings
+	var headings =  ['&nbsp;', '-' , 'Text', 'Link', 'Auto?'];
+    var hdr = document.createElement("tHead");
+	tbl.appendChild(hdr);
+	hdr.setAttribute("class", "autolinktableheader");
+	var hdrrow =  document.createElement("tr");
+	for (var i = 0; i < headings.length; i++) {
+				cell = document.createElement("td");
+				pcell = document.createElement("p");
+				cell.appendChild(pcell);
+				pcell.innerHTML = headings[i];
+				// create blank class
+				pcell.setAttribute("class","autolinkstableheaderclass");
+							hdrrow.appendChild(cell);
+			}
+	 hdr.appendChild(hdrrow);	 // insert the hdr row 
+		   
+	// create body
+	 var tblBody = document.createElement("tbody");
+	tbl.appendChild(tblBody);
+	tblBody.setAttribute("id", "autolinkstablebody");
+	
+	var row, cell, celltext,j;
+	// create a row
+
+	
+	// go through array
+	var i;
+	var s="", ih, cel;
+	var rowid="";
+	var favesrow = new Array();
+	
+	for (i=0; i < favestemp.length; i ++){
+		favesrow = favestemp[i].split("|");
+		// create a row
+		row = document.createElement("tr");
+		for (j = 0; j < headings.length; j++) {
+			// old or new
+			cell = document.createElement("td");
+			cell.setAttribute("class", "rowclass");
+			//cellText = document.createTextNode("&nbsp;");
+			//cell.appendChild(cellText);
+			row.appendChild(cell);
+		} 
+		// add the row to the end of the table body,
+		tblBody.appendChild(row);
+		// style the row
+		row.setAttribute("class", "rowspan");
+		rowid = "rowid" + i;
+		row.setAttribute("id", rowid);
+		rowel = document. getElementById(rowid);// get the row
+		var cellz= rowel.getElementsByTagName("td"); // get the cells in the row
+		
+		// populate the cells
+		// CHECK
+		cel= cellz[0];
+			var newp = document.createElement("p");
+			cel.appendChild(newp);
+			var ih = "<input type=\"checkbox\" name=\"" + rowid + "check\" class=\"checkclass\" >";
+			newp.innerHTML = ih;	
+			
+		// DELETE BUTTON
+		cel = cellz[1];
+				newp = document.createElement("p");
+				cel.appendChild(newp);
+				ih = "<a href=\"javascript:void(null)\" class=\"noteinfobookidclass\" onclick='deleteRow(\"" + rowid + "\")'>Del</a>";
+				newp.innerHTML=ih;
+				newp.setAttribute("id", rowid + "content");
+				newp.setAttribute("ondblclick", "deleteRow(this)");
+				newp.setAttribute("class", "deletebtnclass");
+		
+		// TARGET TEXT
+		cel = cellz[2];
+			newp = document.createElement("p");
+			cel.appendChild(newp);
+			cont = favesrow[0];
+			newp.innerHTML=cont;
+			newp.setAttribute("id", rowid + "targettext");
+			newp.setAttribute("class", "targettextclass");
+		
+		// TARGET TEXT
+		cel = cellz[3];
+			newp = document.createElement("p");
+			cel.appendChild(newp);
+			cont = favesrow[1];
+			newp.innerHTML=cont;
+			newp.setAttribute("id", rowid + "urltext");
+			newp.setAttribute("class", "urltextclass");
+		
+		// AUTOLINK?
+		cel = cellz[4];
+			if ((favesrow.length == 3) && (favesrow[2] == "AUTO")) {
+				ih = "<input type=\"checkbox\" name=\"" + rowid + "autolink\" class=\"autolinkcheckclass\" checked>";
+			}
+			else {
+				ih="<input type=\"checkbox\" name=\"" + rowid + "autolink\" class=\"autolinkcheckclass\">";
+			}
+				newp = document.createElement("p");
+				cel.appendChild(newp);
+
+				newp.innerHTML = ih;
+				newp.setAttribute("id", rowid + "autolinkcheck");
+				newp.setAttribute("class", "autolinkcheckclass");
+			
+	} // looping through array
+	
+	// hide and show
+	document.getElementById("controls").style.display="block";
+	document.getElementById("doitbtn").value="Reload";
+	
+    
+}
+
+function addNewRow(){
+	var targetel = document.getElementById("targettxt");
+	var urlel = document.getElementById("urltxt");
+	var target = targetel.value;
+	var urltxt = urlel.value;
+	// error check
+	if ((url="") || (target=="")){
+		alert("Need anchor text and URL filled in.");
+		return
+	}
+	// add the row
+    var tbl = document.getElementById("thetable");
+	row = document.createElement("tr");
+	tblBody=document.getElementById("autolinkstablebody");
+	
+	tblBody.appendChild(row);
+	
+	var row;
+	row.setAttribute("class", "rowspan");
+	var rowz = tblBody.getElementsByTagName("tr");
+	rowid = "rowid" + (rowz.length - 1);
+	row.setAttribute("id", rowid);
+	for (j = 0; j < 5; j++) {
+			// old or new
+			cell = document.createElement("td");
+			cell.setAttribute("class", "rowclass");
+			//cellText = document.createTextNode("&nbsp;");
+			//cell.appendChild(cellText);
+			row.appendChild(cell);
+		}
+	var rowel = document. getElementById(rowid);// get the row
+	var cellz= rowel.getElementsByTagName("td"); // get the cells in the row
+			// CHECK
+		cel= cellz[0];
+			var newp = document.createElement("p");
+			cel.appendChild(newp);
+			var ih = "<input type=\"checkbox\" name=\"" + rowid + "check\" class=\"checkclass\" >";
+			newp.innerHTML = ih;	
+			
+		// DELETE BUTTON
+		cel = cellz[1];
+				newp = document.createElement("p");
+				cel.appendChild(newp);
+				ih = "<a href=\"javascript:void(null)\" class=\"noteinfobookidclass\" onclick='deleteRow(\"" + rowid + "\")'>Del</a>";
+				newp.innerHTML=ih;
+				newp.setAttribute("id", rowid + "content");
+				newp.setAttribute("ondblclick", "deleteRow(this)");
+				newp.setAttribute("class", "deletebtnclass");
+		
+		// TARGET TEXT
+		cel = cellz[2];
+			newp = document.createElement("p");
+			cel.appendChild(newp);
+			cont = target;
+			newp.innerHTML=cont;
+			newp.setAttribute("id", rowid + "targettext");
+			newp.setAttribute("class", "targettextclass");
+		
+		// URL TEXT
+		cel = cellz[3];
+			newp = document.createElement("p");
+			cel.appendChild(newp);
+			cont = urltxt;
+			newp.innerHTML=cont;
+			newp.setAttribute("id", rowid + "urltext");
+			newp.setAttribute("class", "urltextclass");
+		
+		// AUTOLINK?
+		cel = cellz[4];
+			if (document.getElementById("newautolinkcheck").checked) {
+				ih = "<input type=\"checkbox\" name=\"" + rowid + "autolink\" class=\"autolinkcheckclass\" checked>";
+			}
+			else {
+				ih="<input type=\"checkbox\" name=\"" + rowid + "autolink\" class=\"autolinkcheckclass\">";
+			}
+				newp = document.createElement("p");
+				cel.appendChild(newp);
+
+				newp.innerHTML = ih;
+				newp.setAttribute("id", rowid + "autolinkcheck");
+				newp.setAttribute("class", "autolinkcheckclass");
+}
+	
+//------toggle checkbox
+function toggleCheck(which,state){
+	// toggles checkboxes
+	// 0 = left col, 1 = autolink
+	
+		if (which==0){
+		var whichcell=0;
+	}
+	if (which==1) {
+		var whichcell=4;
+	}
+	
+ var mytable     = document.getElementById("thetable");
+	if (mytable == null) {
+		return
+	}
+   // get table body
+	var mytablebody = mytable.getElementsByTagName("tbody")[0];
+	
+	if (mytablebody==null) {
+		return;
+	}
+	
+	var content, cel;
+	//var mytablebody = document.getElementById("notestablebody1");	// get all rows
+	var rowz = mytablebody.getElementsByTagName("tr");
+	for (var i = 0; i < rowz.length; i++) {
+		cellz = rowz[i].getElementsByTagName("td");
+		cel = cellz[whichcell];
+		content = cel.firstChild.firstChild;
+		if (state == 1) {
+			content.checked = true;
+		}
+		else {
+			content.checked = false;
+		}
+	}
+
+}
+
+//------ DELETE ROW
+function deleteRow(which){
+	 var e = document.getElementById(which);
+     e.style.display="none";
+}
+  
+//------- DELETE SELECTED ROWS
+function deleteSelectedRows(){
+	
+	// confirm the deletion
+	var r = confirm("Really delete those notes?");
+	if (!r) {return}
+	
+	var fset = document.getElementById("thetable"); // get the notes div
+	//var inputs = fset.getElementsByTagName("input");
+	var inputs = fset.getElementsByClassName("checkclass")
+	for (var i = 0; i<inputs.length; i++)
+	if ( inputs.item(i).checked==true){
+		//  the input set is getting the "save these notes" etc. buttons on the bottom)
+		//if ((inputs.item(i).name.indexOf("notespanid" + i + "check")) > -1) {
+			deleteRow("rowid" + i);
+		//}
+	}
+	    
+}
+
+// ------ SAVE IT
+function saveFile(){
+	var mytable     = document.getElementById("thetable");
+	var mytablebody = mytable.getElementsByTagName("tbody")[0];
+	var content, cel, rowz, cellz, auto, s;
+	var worked = true;
+	var autos = 0; 
+	
+	// -- rename the old
+	
+
+	$.post('backupanddeletefavorites.php', {
+					async: false,
+					success: function(){
+						
+						//alert('Success updating link file!');
+					},
+					error: function(){
+						
+						alert("Error deleting");
+					}
+				})
+			
+	
+		rowz = mytablebody.getElementsByTagName("tr");
+		var displayit;
+		for (var i = 0; i < rowz.length; i++) {
+		
+			//CHECK FOR DISPLAY
+			if (rowz[i].style.display != "none") {
+				displayit = true;
+			}
+			else {displayit = false;}
+			if (displayit) {
+				cellz = rowz[i].getElementsByTagName("td");
+				// create row
+				content = cellz[2].firstChild.firstChild.data; // anchor text
+				// trim it
+				content = content.replace(/^\s+|\s+$/g, '');
+
+				if (content != "") { // skip if blank anchor
+					// currenttext = myp.data
+					content = content + "|";
+					content = content + cellz[3].firstChild.firstChild.data + "|"; // url text
+					auto = cellz[4].firstChild.firstChild.checked;
+					if (auto) {
+						content = content + "AUTO";
+						autos++; // increase counter
+					}
+					// add new lin unless the end
+					if (i < rowz.length - 1) {
+						content = content + "\n";
+					}
+					// now write it out
+					if (cellz[2].firstChild.firstChild.data != "") {
+						// save the favorite
+						$.post('writefavorites.php', {
+							newline: content,
+							async: false,
+							success: function(){
+							
+							//alert('Success updating link file!');
+							},
+							error: function(){
+								//alert('Error writing link file');
+								worked = false;
+								alert("Error");
+							}
+						})
+					}
+				}
+				
+			}
+		} // if not hidden row
+		if (worked)  {
+			alert(rowz.length + " favorites saved to file blograft_favorites.txt. Of those, " + autos + " were autolinkers.");
+		}
+	
+}
+	
+	
+</script>
+
+
+
+</head>
+
+<body>
+<!--- BODY -------------------------------------------------------------->
+	<h1>Configure AutoLinks and Favorites</h1>
+	
+	<p><input id="doitbtn" type="button" onclick="readFile();" value="Load"></p>
+	
+	<div id="a">
+		
+		
+	</div>
+	<div id="selectallrow" style="width:90%;display:none">
+	<span class="left"><input type="button" value="Select All" onclick="toggleCheck(0,1)">
+	<input type="button" value="Uncheck All" onclick="toggleCheck(0,0)"></span>
+	<span class="right"><input type="button" value="Select All" onclick="toggleCheck(1,1)">
+	<input type="button" value="Uncheck All" onclick="toggleCheck(1,0)"></span>
+	</div>
+	<p>&nbsp;</p>
+	<div id="controls" style="display:none;clear:all;width:90%;">
+
+	<input  type="button" value="save" onclick="saveFile();">
+    <input type="button" value="Delete selected rows" onclick="deleteSelectedRows();">
+	
+	</div>
+	
+	<div id="adddiv" style="display:'none';'">
+	<p>Add Link:
+		<form name="addform">
+			<p>Target text: <textarea id="targettxt" class="inputtextclass">
+			</textarea>
+			URL: <textarea id="urltxt" class="inputtextclass"></textarea>
+			Autolink: <input type="checkbox" id="newautolinkcheck">
+			<input type="button" value="Add new" onclick="addNewRow()">	
+		</form>
+	</div>
+	
+
+
+
+</body>

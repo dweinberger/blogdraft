@@ -1,0 +1,180 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <!-- http://cse-mjmcl.cse.bris.ac.uk/blog/2006/08/15/1155663782615.html -->
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title>Very Simple Web Search - Google AJAX Search API demo</title>
+    <style type="text/css">
+    body {
+      background-color: white;
+      color: black;
+      font-family: Arial, sans-serif;
+      font-size: small;
+    }
+
+    .url {color: green;}
+    .cached {color: #77C;}
+    </style>
+    <script src="http://www.google.com/uds/api?file=uds.js&amp;v=0.1&amp;key=ABQIAAAAkxIKyt-ytpl4Q0n2YyklaRTjHR5mfAQljfxcduhIjtZgivbuYxSzeHZlc4oGB96NP3dPF8xz0sZrAA"
+            type="text/javascript"></script>
+    <script type="text/javascript">
+    //<![CDATA[
+
+    var gWebSearch;
+	
+	function initgoogle(){
+		//alert("initgoog");
+		var el=window.parent.document.getElementById('ed');//document.parentNode;
+		var se=el.selectionEnd;
+		 var ss=el.selectionStart; 
+		 var s=el.value.substring(ss,se);
+		var q=document.getElementById('query');
+		q.value=s;
+	}
+    
+    function ClickedIt(u) {
+      // alert("in clickedit");
+	if (document.getElementById)
+	{
+		x = document.getElementById("chosenone");
+		x.innerHTML = '';
+		x.innerHTML = u;
+		//alert(u);
+		//parent.document.getElementById("ed").value="YES";
+		// show link box
+		//parent.document.ShowHideDiv("linksinnerdiv");
+		var larea=parent.document.getElementById("linkarea");
+		larea.value=u; // put link into linkbox
+		// expose it
+		parent.document.getElementById('linksinnerdiv').style.display='block';
+		larea.focus();
+		//parent.document.location="#linklink";
+		//createLinkDW();
+		parent.document.getElementById('googlebtn').value="Google";
+		parent.document.getElementById("mtiframediv").style.display='none';
+		
+	}
+	else if (document.all)
+	{
+		x = document.all["chosenone"];
+		x.innerHTML = text;
+	}	
+
+		var maindoc=parent;
+		//alert(maindoc);
+		//holdtext.innerText = "test";
+
+		Copied = x.innerHTML;
+		// alert("copied: " + Copied);
+		copytoclip(Copied);
+      //  window.clipboardData.setData("Text", Copied);
+    }
+	
+	function copytoclip(meintext)
+// http://www.krikkit.net/howto_javascript_copy_clipboard.html
+{
+ if (window.clipboardData) 
+   {
+   
+   // the IE-manier
+   window.clipboardData.setData("Text", meintext);
+   
+   // waarschijnlijk niet de beste manier om Moz/NS te detecteren;
+   // het is mij echter onbekend vanaf welke versie dit precies werkt:
+   }
+   else if (window.netscape) 
+   { 
+   
+   // dit is belangrijk maar staat nergens duidelijk vermeld:
+   // you have to sign the code to enable this, or see notes below 
+   netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
+   
+   // maak een interface naar het clipboard
+   var clip = Components.classes['@mozilla.org/widget/clipboard;1']
+                 .createInstance(Components.interfaces.nsIClipboard);
+   if (!clip) return;
+   
+   // maak een transferable
+   var trans = Components.classes['@mozilla.org/widget/transferable;1']
+                  .createInstance(Components.interfaces.nsITransferable);
+   if (!trans) return;
+   
+   // specificeer wat voor soort data we op willen halen; text in dit geval
+   trans.addDataFlavor('text/unicode');
+   
+   // om de data uit de transferable te halen hebben we 2 nieuwe objecten 
+   // nodig om het in op te slaan
+   var str = new Object();
+   var len = new Object();
+   
+   var str = Components.classes["@mozilla.org/supports-string;1"]
+                .createInstance(Components.interfaces.nsISupportsString);
+   
+   var copytext=meintext;
+   
+   str.data=copytext;
+   
+   trans.setTransferData("text/unicode",str,copytext.length*2);
+   
+   var clipid=Components.interfaces.nsIClipboard;
+   
+   if (!clip) return false;
+   
+   clip.setData(trans,null,clipid.kGlobalClipboard);
+   
+   }
+  // alert("Following info was copied to your clipboard:\n\n" + meintext);
+   return false;
+}
+
+
+    function OnLoadpress(form) {
+  	 //alert('in onload');
+      // Initialize the web searcher
+      gWebSearch = new GwebSearch();
+      gWebSearch.setResultSetSize(GSearch.LARGE_RESULTSET);
+      gWebSearch.setSearchCompleteCallback(null, OnWebSearch);
+      var q = form.query.value;
+     //alert(q);
+      gWebSearch.execute(q);
+    }
+  function OnWebSearch() {
+       if (!gWebSearch.results) return;
+       var searchresults = document.getElementById("searchresults");
+       searchresults.innerHTML = "";
+ 
+       var results = "";
+       for (var i = 0; i < gWebSearch.results.length; i++) {
+         var thisResult = gWebSearch.results[i];
+         results += "<p>";
+         results += "<a href=\"" + thisResult.url + "\">" + thisResult.title + "<\/a><br \/>";
+         results += thisResult.content + "<br \/>";
+         results += "<span class=\"url\">" + thisResult.url + "<\/span>";
+         results +=" <a href=\"javascript:void(0)\" OnClick='ClickedIt(\"" + thisResult.url + "\")'>Click to copy<\/>";
+        // if (thisResult.cacheUrl) {
+         //    results += " - <a class=\"cached\" href=\"" + thisResult.cacheUrl + "\">Cached <\/a>";
+         //}
+         results += "<\/p>";
+         //alert(results);
+       }
+
+       searchresults.innerHTML = results;
+     }
+ 
+     //]]>
+     </script>
+  </head>
+  <body  onload="initgoogle()"> 
+  <!-- onload="OnLoad()"> -->
+  <div id="wrapper"  style="width:400px;background-color:#FFFF00;">
+  <div id="chosenone"></div>
+  <form name="queryform">
+  <textarea name="query" id="query" cols="30" rows="1"></textarea>
+  <INPUT TYPE="button" VALUE="Search it" onMouseUp='OnLoadpress(this.form)'>
+
+  </form>
+   <TEXTAREA id="holdtext" STYLE="display:none;"></textarea>
+        <div id="searchresults" style="background-color:#FFFFCC;"></div>
+</div>
+  </body>
+</html>

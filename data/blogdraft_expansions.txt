@@ -1,0 +1,11 @@
+tm|&trade;
+--|&#8212;
+berkful|Berkman Center for Internet & Society
+teh|the
+eim|Everything Is Miscellaneous
+liveblogbadge|<table width='80%' bgcolor='#FF6600' border=0 align=center><tr><td><p style="color:#FFFFFF"><b>NOTE: Live-blogging.</b> Getting things wrong. Missing points. Omitting key information. Introducing artificial choppiness. Over-emphasizing small matters. Paraphrasing badly. Not running a spellpchecker. Mangling other people's ideas and words. You are  <u>warned</u>, people.</p></td></tr></table><p>
+ber|Berkman
+nad|and
+p|<p>
+br|<br>
+bl <blockquote><p></p></blockquote>

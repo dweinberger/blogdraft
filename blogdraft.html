@@ -1,0 +1,464 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+	<meta content="text/html; charset=windows-1252" http-equiv="content-type">
+	<title>Blogdraft</title>
+	<link rel="icon" type="image/jpg" href="favicon.png">
+	<script type="text/javascript" src="includes/jquery-2.1.4.min.js"></script>
+	<script type="text/javascript" src="includes/jquery-ui-1.11.4.custom/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="includes/textarea-helper.js"></script>
+	<script type="text/javascript" src="includes/json2.min.js"></script>
+	<script type="text/javascript" src="includes/Markdown.Converter.js"></script>
+	<script type="text/javascript" src="js/blogdraft.js"></script>
+	<link href="http://fonts.googleapis.com/css?family=Lora:400,400italic" rel="stylesheet" type="text/css">
+	<link type="text/css" rel="stylesheet" href="css/blogdraft.css">
+	
+	<!-- ========= script ==== -->
+	<script language="javascript" type="text/javascript">
+
+	$(document).ready(function(){
+	
+		init();
+ 
+	 });
+
+	</script> 
+</head>
+<body>
+ <div id="loading" style="display: none"></div>
+  <div id="insertme" class="tool"  style="display:none;"></div>
+  <!-- GOOGLE SEARCH RESULTS -->
+        <div id="googlediv" style="display:none">
+       
+          <!-- GOOGLE SEARCH BOX -->
+          <script>
+				(function() {
+				  var cx = '007117154255002665735:enanyjbed1o';
+				  var gcse = document.createElement('script'); gcse.type = 'text/javascript';
+				  gcse.async = true;
+				  gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+					  '//www.google.com/cse/cse.js?cx=' + cx;
+				  var s = document.getElementsByTagName('script')[0];
+				  s.parentNode.insertBefore(gcse, s);
+				  })();
+			</script> 
+			<gcse:search></gcse:search> <!-- required for google search box -->
+			
+          <div id="resultsdiv"> </div>
+        </div> 
+     <div id="wikipediadiv" style="display:none">
+     	<div id="wpresultsdiv"></div>
+     </div>
+    <div id="container">
+    
+		<!-- Horizontal button bar -->
+         <div id="fixedtop">
+         
+    	<!----= POST TITLE ----> 
+		<div id="topbox">
+			<a name="titlebox"></a><textarea id="posttitle"></textarea>
+			<span id="blogdrafttitle">Blogdraft <span id="creditspan">by
+			  D. Weinberger</span> <span id="revdatespan" name="revdatespan"
+			class="revdate">date</span>
+			</span>
+		
+         
+          <div id="buttonbar">   
+        
+          <span class="tool" onclick="toolselect('boldme')"><b>B</b></span>
+            <span class="tool" onclick="toolselect('italme')"><em>I</em></span>
+            <span class="tool" onclick="toolselect('underme')"><u>U</u></span> <span
+              class="tool"
+              onclick="toolselect('linkme')">Link</span>
+            <span class="tool" onclick="twitLink()">TwitLink</span> <span class="tool"
+              onclick="toolselect('indentme')">Block</span>
+            <span class="tool" onclick="toolselect('lineme')">hr</span> <span class="tool"
+              onclick="addTagFromText();">tag</span>
+            <span class="tool" onclick="toolselect('brme')">br</span> <span class="tool"
+              onclick="toolselect('pme')">P</span>
+            <!--input onclick="linkInit();" value="Link It" type="button"--> 
+            <span class="tool bright" onclick="htmlize();">htmlize</span>
+            <span class="tool" onclick="saveFile();">Save</span>
+            <span class="tool bright" onclick="searchGoogle();">Google</span>
+             <span class="tool" onclick="wikipedize()">Wikipdize</span>
+            <!--input type="button" id="postbtn" onclick="showiframe('post')"  class='smallbutton' value="Blog it" style="display: hide";-->
+           <span class="tool minorbutton" onclick="saveDraft();">Draft</span>
+            <!-- <input type="button" onclick="readDraftDir();" value="Get Drafts"> -->
+          
+            
+            
+            <!--input onclick="clearall();" class="minorbutton" value="Clear" type="button"-->  
+              
+            <span class="tool" onclick="ShowHideDiv('postdiv');">Post it</span>
+            <span class="tool smallbutton" onclick="updatehtml()">Update</span>
+            <span class="tool tinybutton" id="resizewysibtn" onclick="resizeWysiDisplay(-1)">Quick resize</span>
+            <span class="tool minorbutton" onclick='$("#sizingbardiv").fadeIn(300)'>Resize</span> 
+            <span class="tool minorbutton" onclick="ShowHideWysi(); "> Show/Hide"</span>
+              <span class="tool minorbutton" id="resizetextspan" onclick="resizeTextArea2()">Edit
+              Area+</span>
+         
+
+      <!--form method="post" name="wysiform" id="wysiform"-->
+ 
+        
+        </div> <!-- buttonbar -->
+        </div>
+         <div class="clear"></div>
+    
+		</div> <!-- fixed topbox -->
+	
+       <div class="clear"><br><p>&nbsp;</p></div>
+        
+        <!-- EDIT AREA --->
+        <div id="editareawrapper">
+           <!-- Sizing bar -->
+            <div id="sizingbardiv" width="700px" height="100px" style="background:RED; display:none; color:white; font-family:Geneva,Arial;"
+              onclick="captureMousePosition(event)">
+              Click to set size of wysiwyg display </div>
+        <!-- <div id="editareawrapper"> -->
+
+          <!-- Editing Area -->
+          <div id="edcell" onresize="resizeTextArea()">
+            <textarea name="ed" id="ed" class="edstyle" style="opacity: 0">&lt;p&gt;</textarea>
+          </div>
+          <!-- Preview Area -->
+          <div id="html">
+            <!-- 
+<table style="table-layout:fixed;" height="100%" border="0" width="100%">
+              <tbody>
+                <tr height="400px">
+                  <td height="400px" valign="top">
+                  <div id="updatebox"> </div>
+     
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+ -->
+ <div id="updatebox"> </div>
+          </div>
+         </div>
+    
+   
+      <!------ END EDIT AREA ------->
+      <div style="clear:both"><br /></div>
+      
+      <!-- SYMBOLS -->
+      <div id="bottomcontrols">
+      <p> <span class="symbols" onclick="insertSymbol('trade')">™</span> <span
+          class="symbols"
+          onclick="insertSymbol('Agrave')">À</span>
+        <span class="symbols" onclick="insertSymbol('agrave')">à</span> <span class="symbols"
+          onclick="insertSymbol('Aacute')">Á</span>
+        <span class="symbols" onclick="insertSymbol('Egrave')">È</span> <span class="symbols"
+          onclick="insertSymbol('egrave')">è</span>
+        <span class="symbols" onclick="insertSymbol('Eacute')">É</span> <span class="symbols"
+          onclick="insertSymbol('eacute')">é</span>
+        <span class="symbols" onclick="insertSymbol('ntilde')">ñ</span> <span class="symbols"
+          onclick="insertSymbol('Oslash')">Ø</span>
+        <span class="symbols" onclick="insertSymbol('oslash')">ø</span> <span class="symbols"
+          onclick="insertSymbol('Uuml')">Ü</span>
+        <span class="symbols" onclick="insertSymbol('uuml')">ü</span> <span class="symbols"
+          onclick="insertSymbol('Ccedil')">Ç</span>
+        <span class="symbols" onclick="insertSymbol('ccedil')">ç</span> <span class="symbols"
+          onclick="insertSymbol('pound')">£</span>
+        <span class="symbols" onclick="insertSymbol('copy')">©</span> <span class="symbols"
+          onclick="insertSymbol('reg')">®</span>
+        <span class="symbols" onclick="insertSymbol('Uuml')">±</span> <span class="symbols"
+          onclick="insertSymbol('plusmn')">Ü</span>
+        <span class="symbols" onclick="insertSymbol('frac12')">½</span> <span class="symbols"
+          onclick="insertSymbol('frac14')">¼</span>
+        <span class="symbols" onclick="insertSymbol('lt')">&lt;</span> <span class="symbols"
+          onclick="insertSymbol('gt')">&gt;</span>
+        <span class="symbols" onclick="insertSymbol('euro')">€</span>
+        <!-- KEYSTROKE COUNTER --> <span style="background-color:orange"><span
+            id="charsentered">-</span>
+          <span id="charsbeforesave"></span></span>
+        <!-- COLOR PICKER --> 
+        &nbsp;<span class="tool cpicker" onclick="openColorPicker()" style="color:#C46734; border: 1px #117506 solid;"><b>
+            &nbsp;Color Picker</b><span id="chosencolor"></span></span><span id="colorpicker"><span>
+          </span></span></p>
+      <!-- AREA BUTTONS --> 
+       <input type="button" value="TEST" onclick="convertToMarkdown()">
+      <input class="smallbutton" name="hideimagediv" onclick="ShowHideDiv('imagediv');"
+        value="images"
+        placename="imagespot"
+        type="button">
+      <input class="smallbutton" name="hidewrapdiv" onclick="ShowHideDiv('wrapdiv');"
+        value="HTML Wrapper"
+        placename="wrapspot"
+        type="button">
+      <input class="smallbutton" name="hidetablediv" onclick="ShowHideDiv('tablediv');"
+        value="Tables"
+        placename="tablespot"
+        type="button">
+      <input class="smallbutton" name="importsave" onclick="ShowHideDiv('importsave');"
+        value="Restore Saved File"
+        placename="savedfilespot"
+        type="button">
+      <input class="smallbutton" name="hidemacroexpanddiv" onclick="ShowHideDiv('macroexpanddiv');"
+        value="MacroExpand"
+        placename="macroexpandspot"
+        type="button">
+    </div>
+      <!-- LINKS -->
+      <div id="LinkBlock">
+        <a name="linksspot"></a>
+        <input type="button" value="Close" onclick="$('#LinkBlock').fadeOut(300);">
+          <div id="favoritelinkdiv"> <span id="favoritelinkid"></span> </div>
+          <div id="OldLink" class="oldlinkclass"> </div>
+          <div id="ConstructedLinks" class="constructedlinksclass" >
+          </div>
+          <a name="linklink"></a>
+          <form id="addlinkform" style="display:block"> <textarea id="linkarea" rows="1" cols="60" class="submitOnEnter"
+              ondblclick="clearlink();"></textarea>
+            <input onclick="createLinkDW();" value="Add Link" class="smallbutton"
+              type="button">
+            <input onclick="clearlink();" value="Clear" class="smallbutton" type="button"><br>
+            <input onclick="addhttp('http');" value="http" class="smallbutton" type="button">
+            <input onclick="addhttp('www');" value="www" class="smallbutton" type="button">
+            <input onclick="addhttp('http://www');" value="http://www" class="smallbutton"
+              type="button">
+            <input onclick="addTDL('com');" value="com" class="smallbutton" type="button">
+            <input onclick="addTDL('org');" value="org" class="smallbutton" type="button">
+            <input onclick="addTDL('edu');" value="edu" class="smallbutton" type="button">
+            <input onclick="addTDL('gov');" value="gov" class="smallbutton" type="button">
+            <input onclick="addTDL('net');" value="net" class="smallbutton" type="button">
+            <input value="false" id="favoriteanchorcheck" type="checkbox"> <span
+              class="smalllabel">Save
+              as favorite:</span> <textarea id="favoriteanchortext" style="border: 0; overflow: hidden; width: 150px; height: 15px;"></textarea>
+            <span class="smalllabel">Auto-insert the link (single words only):</span>
+            <input value="false" id="favoriteanchorautocompcheck" onclick="toggleFavoriteCheck();"
+              type="checkbox"><br>
+            <span class="smalllabel" id="addTwitterLinkSpan"> <span class="smalllabel">Insert
+                twitlink:</span> <textarea id="twitterLinkTxt" style="border: 0; overflow: hidden; width: 150px; height: 15px;"></textarea>
+              <input onclick="insertTwitterLink()" value="Insert Twit" type="button">
+            </span> </form>
+      </div>
+      <!-- TAGS -->
+     
+      <div id="tagdiv" class="tagdiv"> <input class="smallbutton"
+          name="fewertags"
+          onclick="redrawTagCloud(1);"
+          value="-tags"
+          type="button">
+        <input class="smallbutton" name="moretags" onclick="redrawTagCloud(-1);"
+          value="+tags"
+          type="button">
+        <div id="tags"> <a name="tagsspot"></a>
+          <form id="tagsform"> <textarea id="tagstextarea" rows="1" cols="80"></textarea>
+            <textarea id="tagsautosuggestarea" rows="1" cols="20" class="tagsautosuggestareaclass"></textarea>
+            <input onclick="insertTags();" value="Insert" type="button"> 
+            <input onclick="cleartags();" value="Clear" type="button"> <input id="autocompletecheckbox"
+              checked="checked"
+              class="tinylinks"
+              type="checkbox">Autocomplete
+            </form>
+         <!-- 
+ <div id="tagclouddiv">
+            <p>Tag cloud</p>
+          </div>
+ -->
+        </div>
+      </div>
+      <!-- READ SAVES -->
+      <div id="savedfilediv"> <a name="savedfilespot"></a>
+        <div id="importsave">
+          <p>Saved file: <input id="savedfiletextbox" cols="35" style="height:17px;"
+              value=""
+              type="file">
+            <input onclick="importSavedFile(document.getElementById('savedfiletextbox').value)"
+              value="Import Saved File"
+              type="button"></p>
+        </div>
+      </div>
+      
+      
+   
+          <div> <input onclick="removeReturns();" class="minorbutton" value="Remove CRs"
+              type="button">
+            <input onclick="loadSaveFile();" class="minorbutton" value="Load Saved File"
+              type="button">
+            <input onclick="ShowHideDiv('imagediv');" class="minorbutton" value="Insert image"
+              type="button">
+            <input onclick="insertEmail();" class="minorbutton" value="Email Add."
+              type="button">
+           <input id="createps" checked="checked" type="checkbox">
+            <span class="tinylinks">Auto-insert &lt;p&gt;
+              <!--<input name="Submit" type="submit" onSubmit="formatText('ViewText','wysi');" -->
+            </span> <span class="tinylinks"> <input id="autoupdatehtmlcheck" checked="checked"
+                type="checkbox">
+              Auto-update Preview </span> </div>
+              
+              
+              
+    <!--- TRANSOVERLAY -->
+    <div id="transoverlay">
+    	<!-- close button -->
+    	<br><br><input type="button" value="Close" onclick="closeOverlay()" id="closeOverlayBtn">
+    
+      
+      <!---  WRAP IN HTML -->
+      <div id="wrapdiv" class="panel htmlwrapdiv">
+      <a name="wrapspot"></a>
+          <form id="wrapform">
+            <p class="wraptextfont">Front: <textarea id="wrap1textarea" rows="1"
+                cols="15">&lt;&gt;</textarea>
+              Back: <textarea id="wrap2textarea" rows="1" cols="15">&lt;&gt;</textarea>
+              <input onclick="clearWrap();" value="Clear" type="button"> <input
+                onclick="closeTheHtml();"
+                value="Close the HTML"
+                type="button">
+              <input onclick="insertWrap();" value="Insert" type="button"></p>
+          </form>
+        </div>
+    
+    
+      <!---  TABLE CREATOR -->
+      <div id="tablediv" class="panel" style="display:none"> <a name="tablespot"></a>
+          <form id="tableform">
+            <p class="wraptextfont">Rows: <textarea id="tablerowsid" rows="1" cols="3">5</textarea>
+              Cols: <textarea id="tablecolsid" rows="1" cols="3">2</textarea> <input
+                id="tablebordercheck"
+                checked="checked"
+                type="checkbox">
+              border Width: <textarea id="tablewidthid" rows="1" cols="3">80</textarea>%
+              bkgd color: <input id="tablecolorfield" size="10" value="" type="text">
+              <input id="sample_1" size="1" value="" type="text"> <a href="#" onclick="showColorGrid2('tablecolorfield','sample_1');">
+                Choose color</a></p>
+            <div id="colorpicker201" class="colorpicker201"> </div>
+            <input onclick="$('#transoverlay').fadeOut(300);createTable();" value="Create" type="button"> <br>
+            <br>
+          </form>
+      </div>
+      
+      <!-- POST OPTIONS -->
+      <div id="postdiv" class="panel tinylinks" style="display:none">
+      		<a name="postdiv"></a>
+      		<input value="abundance" type="checkbox">abundance 
+      		<input value="ahole" type="checkbox">ahole
+            <input value="berkman" type="checkbox">berkman 
+            <input value="blogs" type="checkbox">blogs
+            <input value="broadband"   type="checkbox">broadband
+            <input value="big data" type="checkbox">big data
+            <input value="business" type="checkbox">business 
+            <input value="cluetrain"  type="checkbox">cluetrain
+            <input value="copyright" type="checkbox">copyright
+            <input value="culture" type="checkbox">culture 
+            <input value="dpla" type="checkbox">dpla
+            <input value="echo chambers" type="checkbox">echo chambesrs
+            <input value="education" type="checkbox">education
+            <input value="egov" type="checkbox">egov 
+            <input value="entertainment" type="checkbox">entertainment
+            <input value="everythingismiscellaneous" type="checkbox">eim 
+            <input value="experts" type="checkbox">experts
+            <input value="free culture" type="checkbox">free culture
+            <input value="free-making software" type="checkbox">free-making software
+            <input value="future" type="checkbox">future 
+            <input value="infohistory" type="checkbox">infohistory
+            <input value="internet" type="checkbox">internet
+            <input value="interop" type="checkbox">interop
+            <input value="journalism" type="checkbox">journalism 
+            <input value="law" type="checkbox">law
+            <input value="libraries" type="checkbox">libraries
+            <input value="liveblog" type="checkbox">liveblog 
+            <input value="marketing"  type="checkbox">marketing
+            <input value="misc" type="checkbox">misc 
+            <input value="moi" type="checkbox">moi
+            <input value="net neutrality" type="checkbox">net neut 
+            <input value="open access" type="checkbox">open access 
+            <input value="peace" type="checkbox">peace
+            <input value="philosophy" type="checkbox">philosophy 
+            <input value="podcast" type="checkbox">podcast
+            <input value="poetry" type="checkbox">poetry
+            <input value="policy" type="checkbox">policy 
+            <input value="politics" type="checkbox">politics
+            <input value="puzzles" type="checkbox">puzzles 
+            <input value="reviews" type="checkbox">reviews
+            <input value="science" type="checkbox">science
+            <input value="social_media"  type="checkbox">soc media 
+            <input value="taxonomy" type="checkbox">taxonomy 
+            <input value="tech" type="checkbox">tech
+            <input value="too big toknow" type="checkbox">2b2k 
+            <input value="travel" type="checkbox">travel
+            <input value="video" type="checkbox">video
+            <input value="whines" type="checkbox">whines
+              <!-- SIMPLE TAG INPUT --> 
+            <div>Tags:<textarea id="tagstringbox"></textarea></div> 
+            <div>
+            <input type="button" value="Post" onclick="postIt()">
+            <input type="button" value="Postpone" onclick="$('#transoverlay').fadeOut(300)" >
+            </div>
+            <div>
+            <input type="radio" name="postmode" value="post" checked> Publish 
+            <input type="radio" name="postmode" value="draft"> Draft
+            </div> 
+            <div id="tagclouddiv">
+          </div>
+        </div>
+        
+      
+        
+       <!---  ADD EXPANSION  -->
+      <div id="macroexpanddiv" style="display:none">
+      <a name="macroexpandspot"></a>
+       
+          <p>Single word: <textarea id="macroexpandwordtxt" cols="10" rows="1"></textarea>
+            Replacement: <textarea id="macroexpandreplacetxt" cols="30" rows="1"></textarea>
+            &nbsp;<input id="macroexpandcheckbox" checked="checked" type="checkbox">Save
+            it <input onclick="addMacroExpand();" value="Add macro expansion" type="button">
+       
+      </div>
+      
+            <!-- IMAGE -->
+      <div id="imagediv" class="imagediv" style="display:none;" > 
+      <a name="imagespot"></a>
+        <!--div id="imagesdiv"-->
+          <form id="imagesform">
+            <p>Server path <textarea id="imagepath" cols="70" rows="1">http://www.hyperorg.com/blogger/images</textarea><br>
+              Alt text<textarea id="alttext" cols="70" rows="1"></textarea><br>
+              Caption<textarea id="captiontxt" cols="70" rows="1"></textarea></p>
+            Link to<textarea id="photolinktotxt" cols="70" rows="1"></textarea>
+            <p>width: <textarea id="imagewidth2" cols="3" rows="1"></textarea>
+              height: <textarea id="imageheight" cols="3" rows="1"></textarea>
+              <input id="centerimage" checked="checked" type="checkbox">Center
+              Desired width: <textarea id="widthchange" cols="3" rows="1"></textarea>
+              <input id="widthchangebutton" onclick="adjustImgSize('width');" value="Adjust Ht"
+                type="button">
+              Desired height: <textarea id="heightchange" cols="3" rows="1"></textarea>
+              <input id="widthchangebutton" onclick="adjustImgSize('height');" value="Adjust Wd"
+                type="button"></p>
+            <input onclick="insertimage();" value="Insert image" type="button">
+            <input onclick="clearimage();" value="Clear" type="button"> </form>
+          <form enctype="multipart/form-data" action="uploader.php" method="POST">
+            <input name="MAX_FILE_SIZE" value="100000000" type="hidden">
+            <p>Choose a file to upload: <input name="uploadedfile" cols="70" type="file"></p>
+            <input value="Upload File" type="submit"> </form>
+        </div>
+      <!--/div --> 
+      </div>
+        <!-- transoverlay END-->
+        
+        </div> <!-- editareawrapper END -->
+      
+    
+      <!---  PREFS -->
+      <div id="prefsdiv" class="prefsdiv" style="display:none">
+        <form id="presform"> <a href="autolinkconfig.html" target="â€_blankâ€"
+            class="tags">Edit
+            autolinks and favorites (in new window)</a> <input value="false" id="autosavecheck"
+            checked="checked"
+            type="checkbox">
+          Auto save <input value="false" id="autoexpandcheck" checked="checked"
+            type="checkbox">
+          Auto expansions <input value="false" id="includetagscheck" checked="checked"
+            type="checkbox">
+          Include tags </form>
+      </div>
+
+ 
+      <!-- ----= TESTING ------->
+      <div id="testarea"> </div>
+    </div>
+  </body>
+</html>
