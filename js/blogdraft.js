@@ -37,7 +37,7 @@ var revdate = "August 15, 2015";
 // Feel free to edit these.
 
 // url of page where you create posts
-var BlogPosterURL = "http://www.PARH_TO_YOUR_WORPRESS_INSTALLATION/wp-admin/post-new.php";
+var BlogPosterURL = "http://www.PATH_TO_YOUR_WORPRESS_INSTALLATION/wp-admin/post-new.php";
 // Google search form address
 var googleSearchApiAddress = "http://127.0.0.1/~PATH_TO_YOUR LOCAL_HTDOCS_FOLDER/blogdraft/includes/google_api_search.html"
 // email address so can insert email with @ as a graphic to fool the spam harvesters
