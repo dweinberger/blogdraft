@@ -1,35 +1,49 @@
 /**
  * @author David Weinberger
  * david@weinberger.org
+ The MIT License (MIT)
+
+Copyright (c) 2015 David Weinberger
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
  */
 var revdate = "August 15, 2015";
 
-// ------------- S E T U P  [obsolete?]-=---------------------------------
-// IN FIREFOX, set signed.applets.codebase_principal_support to true (about:config)
-// IN OS X edit /private/etc/apache2/httpd.conf (as sudo)
-// UNCOMMENT: 
-// # AddHandler cgi-script .cgi
-// AND ADD
-//  AddHandler cgi-script .pl
-// Uncomment: 
-// # LoadModule php5_module libexec/httpd/libphp5.so
-// or uncomment # LoadModule php5_module libexec/apache2/libphp5.so
+// ------------- S E T U P -=---------------------------------
+//  To post from this app, need IXR_Library.php
 //
-// apachectl restart
-
+// Expects bloggraft_drafts and blogdraft_saved_files folders 
+//
+// To see a list of your categories, with checkboxes, you have to edit
+// blogdraft.html. There is nothing automated or pleasant about this.
 
 // ================== ADJUSTABLE PREFERENCES =====================
 // Feel free to edit these.
 
 // url of page where you create posts
-var BlogPosterURL = "http://www.hyperorg.com/blogger/wp-admin/post-new.php";
+var BlogPosterURL = "http://www.PARH_TO_YOUR_WORPRESS_INSTALLATION/wp-admin/post-new.php";
 // Google search form address
-var googleSearchApiAddress = "http://127.0.0.1/~weinbergerd/blogdraft/extras/google_api_search.html"
-//var googleSearchApiAddress = "https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.jsø";
+var googleSearchApiAddress = "http://127.0.0.1/~PATH_TO_YOUR LOCAL_HTDOCS_FOLDER/blogdraft/includes/google_api_search.html"
 // email address so can insert email with @ as a graphic to fool the spam harvesters
 var email1 = "david"; // before the at sign
 var email2 = "weinberger.org"; // after the at sign
-var atsign = "http://www.hyperorg.com/blogger/images/atsign.png"; // path to the at sign on the server
+var atsign = "http://www.PATH_TO_AN_@_SYMBOL/atsign.png"; // path to the at sign on the server
 var atsignwidthandheight = "11";
 var autoCompleteKey = 39; // key that accepts a suggested tag completion. (39 = right arrow)
 
