@@ -112,7 +112,7 @@
         <!-- EDIT AREA --->
         <div id="editareawrapper">
            <!-- Sizing bar -->
-            <div id="sizingbardiv" width="700px" height="100px" style="background:RED; display:none; color:white; font-family:Geneva,Arial;"
+            <div id="sizingbardiv" width="100%" height="100px" style="background:#078AC5; display:none; color:white; font-family:Geneva,Arial;"
               onclick="captureMousePosition(event)">
               Click to set size of wysiwyg display </div>
         <!-- <div id="editareawrapper"> -->
@@ -145,37 +145,13 @@
       
       <!-- SYMBOLS -->
       <div id="bottomcontrols">
-      <p> <span class="symbols" onclick="insertSymbol('trade')">™</span> <span
-          class="symbols"
-          onclick="insertSymbol('Agrave')">À</span>
-        <span class="symbols" onclick="insertSymbol('agrave')">à</span> <span class="symbols"
-          onclick="insertSymbol('Aacute')">Á</span>
-        <span class="symbols" onclick="insertSymbol('Egrave')">È</span> <span class="symbols"
-          onclick="insertSymbol('egrave')">è</span>
-        <span class="symbols" onclick="insertSymbol('Eacute')">É</span> <span class="symbols"
-          onclick="insertSymbol('eacute')">é</span>
-        <span class="symbols" onclick="insertSymbol('ntilde')">ñ</span> <span class="symbols"
-          onclick="insertSymbol('Oslash')">Ø</span>
-        <span class="symbols" onclick="insertSymbol('oslash')">ø</span> <span class="symbols"
-          onclick="insertSymbol('Uuml')">Ü</span>
-        <span class="symbols" onclick="insertSymbol('uuml')">ü</span> <span class="symbols"
-          onclick="insertSymbol('Ccedil')">Ç</span>
-        <span class="symbols" onclick="insertSymbol('ccedil')">ç</span> <span class="symbols"
-          onclick="insertSymbol('pound')">£</span>
-        <span class="symbols" onclick="insertSymbol('copy')">©</span> <span class="symbols"
-          onclick="insertSymbol('reg')">®</span>
-        <span class="symbols" onclick="insertSymbol('Uuml')">±</span> <span class="symbols"
-          onclick="insertSymbol('plusmn')">Ü</span>
-        <span class="symbols" onclick="insertSymbol('frac12')">½</span> <span class="symbols"
-          onclick="insertSymbol('frac14')">¼</span>
-        <span class="symbols" onclick="insertSymbol('lt')">&lt;</span> <span class="symbols"
-          onclick="insertSymbol('gt')">&gt;</span>
-        <span class="symbols" onclick="insertSymbol('euro')">€</span>
+      <span id="symbolsspan"> 
+      </span>
         <!-- KEYSTROKE COUNTER --> <span style="background-color:orange"><span
             id="charsentered">-</span>
           <span id="charsbeforesave"></span></span>
         <!-- COLOR PICKER --> 
-        &nbsp;<span class="tool cpicker" onclick="openColorPicker()" style="color:#C46734; border: 1px #117506 solid;"><b>
+        &nbsp;<span class="tool cpicker" onclick="openColorPicker()"><b>
             &nbsp;Color Picker</b><span id="chosencolor"></span></span><span id="colorpicker"><span>
           </span></span></p>
       <!-- AREA BUTTONS --> 
@@ -212,7 +188,7 @@
           <a name="linklink"></a>
           <form id="addlinkform" style="display:block"> <textarea id="linkarea" rows="1" cols="60" class="submitOnEnter"
               ondblclick="clearlink();"></textarea>
-            <input onclick="createLinkDW();" value="Add Link" class="smallbutton"
+            <input onclick="createLinkDW();" value="Add Link" class="tool"
               type="button">
             <input onclick="clearlink();" value="Clear" class="smallbutton" type="button"><br>
             <input onclick="addhttp('http');" value="http" class="smallbutton" type="button">
@@ -335,7 +311,8 @@
       <!-- POST OPTIONS -->
       <a name="postdiv"></a>
       <div id="postdiv" class="panel tinylinks" style="display:none">
-      		<div id="categoriesdiv"></div>
+      	<div id="categoriesdiv"></div>	
+      		
               <!-- SIMPLE TAG INPUT --> 
             <div>Tags:<textarea id="tagstringbox"></textarea></div> 
             <div>
@@ -413,6 +390,7 @@
       <!-- ----= TESTING ------->
       <div id="testarea"> </div>
     </div>
-    <script type="text/javascript" src="prefs/blogdraft_preferences.js"></script>
+    
+	<script type="text/javascript" src="prefs/blogdraft_preferences.js"></script>
   </body>
 </html>

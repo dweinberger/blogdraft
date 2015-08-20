@@ -1,6 +1,10 @@
 /**
  * @author David Weinberger
  * david@weinberger.org
+ 
+ /**
+ * @author David Weinberger
+ * david@weinberger.org
  The MIT License (MIT)
 
 Copyright (c) 2015 David Weinberger
@@ -23,54 +27,23 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
+
 var revdate = "August 15, 2015";
 
-// ------------- S E T U P -=---------------------------------
-//  To post from this app, need IXR_Library.php
+// ------------- S E T U P  [obsolete?]-=---------------------------------
+// IN FIREFOX, set signed.applets.codebase_principal_support to true (about:config)
+// IN OS X edit /private/etc/apache2/httpd.conf (as sudo)
+// UNCOMMENT: 
+// # AddHandler cgi-script .cgi
+// AND ADD
+//  AddHandler cgi-script .pl
+// Uncomment: 
+// # LoadModule php5_module libexec/httpd/libphp5.so
+// or uncomment # LoadModule php5_module libexec/apache2/libphp5.so
 //
-// Expects bloggraft_drafts and blogdraft_saved_files folders 
-//
-// To see a list of your categories, with checkboxes, you have to edit
-// blogdraft.html. There is nothing automated or pleasant about this.
+// apachectl restart
 
-// ================== ADJUSTABLE PREFERENCES =====================
-// Feel free to edit these.
 
-// url of page where you create posts
-var BlogPosterURL = "http://www.PATH_TO_YOUR_WORPRESS_INSTALLATION/wp-admin/post-new.php";
-// Google search form address
-var googleSearchApiAddress = "http://127.0.0.1/~PATH_TO_YOUR LOCAL_HTDOCS_FOLDER/blogdraft/includes/google_api_search.html"
-// email address so can insert email with @ as a graphic to fool the spam harvesters
-var email1 = "david"; // before the at sign
-var email2 = "weinberger.org"; // after the at sign
-var atsign = "http://www.PATH_TO_AN_@_SYMBOL/atsign.png"; // path to the at sign on the server
-var atsignwidthandheight = "11";
-var autoCompleteKey = 39; // key that accepts a suggested tag completion. (39 = right arrow)
-
-// how wide should the preview area be initially?
-var wysiAreaWidth = "20%"; // width of wysiwyg preview area
-var defaultWysiAreaWidth = wysiAreaWidth; // set this for quick resize
-var editAreaWidth = "80%"; // these should add up to 100
-// begin by showing the preview area? 
-var showWysiArea = true;
-// For quick resize button, what size should the wysi area be, in percent?
-var QuickResizePercent = 50;
-// Automatically replace begin and end quotes with straight quotes, during htmlize step?
-var straightenQuotes = true;
-var KeystrokesBeforeSave = 100; // how many keystrokes before autosave the file?
-var updateAfterEveryKeystroke = true; // update the wysiwyg view after each keystroke?
-
-// Size of largest and smallest fonts in the tagcloud
-var largestfont = 24;
-var smallestfont = 6;
-// How many times does a tag have to be used to show up in the tag cloud?
-var tagThreshhold = 2;
-// name and path of automatic save file made while writing
-var tempSaveFile = "blogdraft_temp_save.txt";
-// include tags at end of post?
-var includeTags = false;
-// when inserting twitter link, make anchor text person's handle ("HANDLE") or any other word?
-var gtweetanchor = "HANDLE";
 
 // =============== END OF EDITABLE PREFERENCES. ================= 
 // LEAVE THE REST OF THIS ALONE...
@@ -170,6 +143,14 @@ function init(){
 			}
 		});        
 	};
+	// simulate button press
+	$(".tool").mousedown(function(){
+		$(this).css({"background-color" : "#D408B9"}); //"#2FAF17"});
+	});
+	$(".tool").mouseup(function(){
+		$(this).animate({"background-color" : "#EE6D0B"}, 500, function(){});
+	});
+
 
 
     
@@ -213,6 +194,22 @@ function init(){
 			}
 		}		
 	});
+	
+	// create checkboxes for categories from list in blogdraft_preferences.txt
+	for (var i=0; i < catlist.length; i++){
+	var s = ' <input value="' + catlist[i] + '" type="checkbox"'  + '">' + catlist[i];
+			$("#categoriesdiv").append(s);
+	}
+	// list symbols from list in blogdraft_preferences.txt
+	for (var i=0; i < symbolslist.length; i++){
+		var span = document.createElement("span");
+		span.setAttribute("class","symbols");
+		span.setAttribute("onclick","insertSymbol('" + symbolslist[i] + "')");
+		var symb = "&" + symbolslist[i] + ";"
+		$(span).html(symb );
+		$("#symbolsspan").append(span);
+	}	
+
 	
 
 }
@@ -355,7 +352,7 @@ function captureMousePosition(e){
 	posy = e.clientY;
 	}
 	resizeWysiDisplay(posx);
-	$("#sizingbardiv").fadeOut(300);
+	$("#sizingbardiv").fadeOut(500);
 } 
 
 function testtagcompleter(e){
@@ -819,12 +816,12 @@ function postIt(){
             data: {title: tit, body : cont, tags: tags, categoryArray : cats, postmode : postmode},
             success: function(expresult){
             	 $("#loading").hide();
-                insertNotice(titlecont + " posted.");
+                notify(titlecont + " posted.");
             },
             error: function(e){
             	if (e.responseText.indexOf("Successfully") > -1){
             		 $("#loading").hide();
-            		insertNotice("Success! Let the regrets begin!")
+            		notify("Success! Let the regrets begin!")
             		//alert("Success! Post has been posted!\nLet the regrets begin!");
             		$("#transoverlay").fadeOut(300);
             	}
@@ -1154,7 +1151,7 @@ function replaceWithAutolink(w){
 }
 
 
-function insertNotice(s, status){
+function notify(s, status){
 	//var rep = document.getElementById('insertme');
 	
 	if (status == "ERROR"){
@@ -1297,7 +1294,7 @@ function AutoSaveFile(){
         success: function(data){
             alert('Success writing save file!');
 			if (data.indexOf("Cannot open save file") ==0) {
-				insertNotice("<p class='notice'> Unable to auto save file</p>");
+				notify("<p class='notice'> Unable to auto save file</p>");
         }},
         error: function(data){
            //alert('Error writing save file');
@@ -1308,7 +1305,12 @@ function AutoSaveFile(){
 
 // ------------------- SAVE IT
 function saveFile(quiet){
-    var legittitle = getLegitTitle() + ".txt";
+    var legittitle = getLegitTitle();
+    if (legittitle == -1){
+    	notify("Save cancelled.");
+    	return
+    }
+    legittitle = legittitle + ".txt";
     var posttit = document.getElementById('posttitle').value;
     var wysival = document.getElementById('ed').value;
     var tags = document.getElementById("tagstextarea").value
@@ -1323,12 +1325,15 @@ function saveFile(quiet){
         data: {"savedbody" : wysival, "savedtitle" : legittitle, "internaltit" : posttit , "tags" : tags},
         success: function(dirresult){
            if (quiet != "QUIET") {
-				insertNotice(legittitle + " saved.");
+				notify(legittitle + " saved.");
 			}
         },
         error: function(e){
         	if (e.statusText !== "OK"){
-           	 insertNotice('Error reading blogdraft_expansions.txt: ' + e.statusText, "ERROR");
+           	 notify('Error reading blogdraft_expansions.txt: ' + e.statusText, "ERROR");
+           	 }
+           	 else{
+           	 	notify(legittitle + " saved.", "OK");
            	 }
         }
     })
@@ -1355,15 +1360,15 @@ function saveDraft(){
         data: {"savedbody" : wysival , "savedtitle" : legittitle , "internaltit" : posttit ,"tags" : tags},
         success: function(dirresult){
            if (quiet != "QUIET") {
-				insertNotice( legittitle + " saved.", "OK");
+				notify( legittitle + " saved.", "OK");
 			}
         },
         error: function(e){
         	if (e.statusText !== "OK"){
-           	 insertNotice('Error reading writedraftfile.php: ' + e.statusText, "ERROR");
+           	 notify('Error reading writedraftfile.php: ' + e.statusText, "ERROR");
            	 }
            	 else{
-           	 	insertNotice( legittitle + " saved.", "OK");
+           	 	notify( legittitle + " saved.", "OK");
            	 }
         }
     })
@@ -1377,8 +1382,15 @@ function getLegitTitle(){
     var title = document.getElementById('posttitle').value;
     if (title == "") {
         title = prompt("Enter a title");
-        if (title.length > 0) {
+        if (title == null){ // prompt was cancelled
+        	return -1;
+        }
+        if (title !== "") {
             document.getElementById("posttitle").value = title;
+        }
+        else {
+        	notify("Title required.","ERROR");
+        	getLegitTitle();
         }
         
     }
@@ -2180,8 +2192,10 @@ function sizeEditAndWysiAreas(){
 		// adjust size of edit area
 		var eled = document.getElementById("edcell");
 		var elht = document.getElementById("html");
-		eled.style.width=editAreaWidth;
-		elht.style.width=wysiAreaWidth;
+		$("#html").animate({width:wysiAreaWidth}, 2000, function(){});
+		$("#edcell").animate({width:editAreaWidth}, 2000, function(){});
+		//eled.style.width=editAreaWidth;
+		//elht.style.width=wysiAreaWidth;
 }
 
 function readConfig(){
@@ -2190,17 +2204,20 @@ function readConfig(){
         type: "POST",
         url: "data/blogdraft_config.txt",
         async: false,
-        success: function(listresult){
-            configfile = listresult;
+        success: function ajaxConfig(listresult){
+            setPrefs(listresult);
+            notify("Preferences set", "OK")
         },
-        error: function(){
-            alert('Error reading blogdraft_links.txt');
+        error: function(e){
+            var errtext = e.statusText;
         }
-    })
-    alert("configfile=" + configfile);
-    
-    if (configfile == "") {
-        alert("data/blograft_config.txt not founding. Resorting to defaults");
+    }) 
+}
+
+function setPrefs(configdata){
+	 
+    if (configdata == "") {
+        notify("data/blograft_config.txt not founding. Resorting to defaults", "ERROR");
     }
     else {
         configmeta.length = "";

@@ -2,14 +2,14 @@
 // Feel free to edit these.
 
 // url of page where you create posts
-var BlogPosterURL = "http://www.PATH_TO_YOUR_WORDPRESS_INSTALLATION/wp-admin/post-new.php";
+var BlogPosterURL = "http:/PATH TO YOUR WP INSTALLATION/wp-admin/post-new.php";
 // Google search form address
-var googleSearchApiAddress = "http://PATH_TO_YOUR_HTDOCS/blogdraft/includes/google_api_search.html"
+var googleSearchApiAddress = "http://PATH TO YOUR INCLUDES FOLDER/blogdraft/includes/google_api_search.html"
 //var googleSearchApiAddress = "https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.jsø";
 // email address so can insert email with @ as a graphic to fool the spam harvesters
 var email1 = "david"; // before the at sign
 var email2 = "weinberger.org"; // after the at sign
-var atsign = "http://www.YOUR_PATH/blogger/images/atsign.png"; // path to the at sign on the server
+var atsign = "http://PATH TO AT SIGN/images/atsign.png"; // path to the at sign on the server
 var atsignwidthandheight = "11";
 var autoCompleteKey = 39; // key that accepts a suggested tag completion. (39 = right arrow)
 
@@ -38,9 +38,29 @@ var includeTags = false;
 // when inserting twitter link, make anchor text person's handle ("HANDLE") or any other word?
 var gtweetanchor = "HANDLE";
 
-// List your categories. The names have to be the same as the names in WordPRess
-// These will show up as checkboxes when you post to WordPRess.
-var catlist = new Array('cat1','cat2'
-	);
+// Create category checkboxes
+// 		List the categories you've set up in wordpress. Use exactly
+//		the same name here as you do there
 
+var catlist = new Array('abundance','ahole','berkman', 'blogs','broadband','big data',
+	'business','cluetrain','copyright','culture','dpla','echo chambers','education',
+	'egov','entertainment','everythingismiscellaneous','experts','free culture','free-making software',
+	'future','infohistory','internet','interop','journalism','law','libraries','liveblog',
+	'marketing','misc','moi','net neutrality','open access','philosophy','podcast',
+	'poetry','policy','politics','puzzles','reviews','science','social_media','taxonomy',
+	'teach','2b2k','travel','video','whines'
+	);
+	
+// Create one-click symbols
+//		List the HTML names of the symbols you want to
+//		show up below the editing window. But omit the "&" at 
+//		the beginning and the ";" at the end. One click
+//		will insert them. For example, the HTML version
+//		of the euro symbol (€) is "&euro;" so you'd list "euro"
+
+var symbolslist = new Array('Agrave','aacute','Egrave','Eacute','ntilde','oslash','uuml',
+	'ccedil','copy','Uuml','frac12','lt','gt','euro');
+
+// XXXXXXXXX LEAVE THESE ALONE, PLEASE XXXXXXXXXXXX
 updateStatus(catlist.length + " categories loaded.");
+updateStatus(symbolslist.length + " symbols loaded.");
