@@ -1,3 +1,0 @@
-linkone.html
-linktwo.html
-linkthree.html

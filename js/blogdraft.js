@@ -109,7 +109,7 @@ function init(){
 	readFavoriteLinks();
 	readTwitterLinks();
 	
-	document.getElementById("charsbeforesave").innerHTML = "<span class='charsbeforesaveclass'>  of " + KeystrokesBeforeSave + " chars before save.";
+	$("#keystrokescounter").text(KeystrokesBeforeSave);
 	location.href="#titlebox";
 	updateStatus("Initialization complete.")
 	document.getElementById('revdatespan').innerHTML=" Revision: " + revdate;
@@ -176,9 +176,16 @@ function init(){
 	$.ctrl('U', function() {
 		toolselect("underme");
 	});
+	$.ctrl('S', function() {
+		toolselect("saveme");
+	});
+	$.ctrl('G', function() {
+		searchGoogle();
+	});
 	$.ctrl('', function() {
 		toolselect("");
 	});
+
 	// escape key mapping
 	$(document).keyup(function(k) {
 		if (k.keyCode == 27){
@@ -209,8 +216,14 @@ function init(){
 		$(span).html(symb );
 		$("#symbolsspan").append(span);
 	}	
-
+	updateStatus("Prefs: " + catlist.length + " categories, " + symbolslist.length + " symbols.");
 	
+	if (showTagCloud == "TRUE"){
+		buildTagCloud();
+	}
+
+	// handle getting file selected for image upload
+	//document.getElementById('fileselector').addEventListener('change', handleFileSelect, false);
 
 }
 
@@ -266,9 +279,9 @@ function cK(e){
 		}
 	}
 	// insert keystroke counter
-	document.getElementById("charsentered").innerHTML = "<span class='keystrokescounterclass'>" + keystrokectr + "</span>";
+	$("#keystrokescounter").text(KeystrokesBeforeSave - keystrokectr) ;
 	if (keystrokectr==0) {
-		document.getElementById("charsentered").innerHTML = "<span class='keystrokescounterclasssaved'>SAVED</span>";
+		document.getElementById("keystrokecounter").innerHTML = "SAVED";
 	}
 	
 	
@@ -843,7 +856,7 @@ function searchGoogle(){
         getSelectedText(); // puts it into a global
         var searchterm = seltext;
         if (searchterm == ""){
-        	alert("No term selected");
+        	notify("Google search: No term selected", "ERROR");
         	$('#googlediv').fadeOut(300);
         	return;
         }
@@ -1021,7 +1034,7 @@ function toolselect(which){
 		removeBlankPs(); // remove that annoying P linefeed
     }
     if (which == 'linkme') {
-        linkInit();
+        linkIt();
         slen1 = 0;
         slen2 = 0;
         return // don't set insertion point below because ruins the selection the inserthelink needs
@@ -1045,6 +1058,9 @@ function toolselect(which){
         wrapSelection("<u>", "</u>");
         slen1 = 3;
         slen2 = 4;
+    }
+    if (which == 'saveme') {
+        saveFile();
     }
     // set caret position
     if (seltext.length == 0) { // if nothing selected, keep it within
@@ -1076,15 +1092,21 @@ function getSelectedText(){
     seltext = el.value.substring(selstart, selend);
 }
 
-function insertText(txt, where){
+function insertText(txt, where,insertpoint){
     var el = document.getElementById('ed');
     var oldtxt = el.value;
     var p1 = oldtxt.substring(0, selstart);
     var p2 = oldtxt.substring(selstart);
     var newtxt = p1 + txt + p2;
     el.value = newtxt;
-    el.selectionStart = selstart + txt.length;
-    el.selectionEnd = el.SelectionStart;
+    if (insertpoint == null){
+    	insertpoint = txt.length;
+    }
+    
+     el.selectionEnd = el.SelectionStart;
+    el.selectionStart = selstart + insertpoint;
+    setCaretPosition(selstart + insertpoint);
+   
     
 }
 
@@ -1169,7 +1191,7 @@ function notify(s, status){
      });
 }
 
-function insertautolink(){
+function insertautolink_UNUSED(){
     // parse insertme for match number
     var im = document.getElementById('insertme');
     //var imv=im.value;
@@ -1326,6 +1348,8 @@ function saveFile(quiet){
         success: function(dirresult){
            if (quiet != "QUIET") {
 				notify(legittitle + " saved.");
+				keystrokectr = 0 ;
+				$("#keystrokecounter").innerHTML = "SAVED";
 			}
         },
         error: function(e){
@@ -1449,9 +1473,8 @@ function readDraftDir(){
 function insertimage(){
     getSelectedText(); // set globals
     var ipath = document.getElementById('imagepath');
-    var iwidth = document.getElementById('imagewidth2');
-	var w=iwidth.value; 
-    var iheight = document.getElementById('imageheight');
+    var newwidth = $('#widthchange').val();
+    var newheight = $('#heightchange').val();
     var ialt = document.getElementById('alttext').value;
 	var icaption = document.getElementById('captiontxt').value;
 	var ilink = document.getElementById("imagelinktotxt").value;
@@ -1462,18 +1485,17 @@ function insertimage(){
         s = s + " alt='" + ialt + "'";
     }
 	
-    if  (w != '') {
-        s = s + " width=" + iwidth.value;
+    if  (newwidth != '') {
+        s = s + " width=" + newwidth;
     }
-	w = iheight.value;
-    if (w != "") {
-        s = s + " height=" + iheight.value;
+    if (newheight != "") {
+        s = s + " height=" + newheight;
     }
     
     s = s + ">";
 	// caption?
 	if (icaption != ""){
-		s = s + "<br><span>" + icaption + "</span>"
+		s = s + "<br><span class='caption'>" + icaption + "</span>"
 	}
 	// link?
 	// caption?
@@ -1481,11 +1503,19 @@ function insertimage(){
 		s =  "<a href='" + ilink + "'>" + s +  "</a>";
 	}	
 	// Centered?
-    if (document.getElementById('centerimage').checked) {
+   // if (document.getElementById('centerimage').checked) {
         s = "<div align=center>" + s + "</div>"
-    }
+   // }
+   
+   // get image name from iframe
+  // var iframe = $('#imageuploaderiframe'); // or some other selector to get the iframe
+	//var ifr =  iframe.contents();
 	
-    insertText(s, selstart);
+    insertText(s, selstart, selstart);
+    
+    // close it
+    closeOverlay();
+    //setCaretPosition(selstart);
     
 }
 
@@ -1514,6 +1544,57 @@ function insertSymbol(con){
     // get the content and insert it
     var sym = "&" + con + ";"
     inserttextatcursor(sym);
+}
+
+function insertCallout(){
+	
+	// get caret
+	getSelectedText();
+	var thetext = seltext;
+	if (thetext == null){
+		thetext= " ";
+	}
+	if (calloutSide == "RIGHT"){ // set in prefs
+		var  whichclass = "calloutright";
+	}
+	else {
+		var whichclass = "calloutleft";
+	}
+	 var callout = "<span class='" + whichclass + "'>&ldquo;" + thetext + "&rdquo;</span>"
+	var insertpt = 22 + whichclass.length;
+	insertText(callout, selstart,insertpt);
+}
+
+function alternateCallouts(){
+	// first right, then left
+	var alltext = $("#ed").val();
+	var p1 = 0;
+	var p2 = 0;
+	var s1,s1;
+	var change = false;
+	if (calloutSide == "RIGHT"){ // set in prefs
+		var  whichclass = "calloutright";
+	}
+	else {
+		var whichclass = "calloutleft";
+	}
+	while (p2 > -1){
+		p2 = alltext.indexOf("class='calloutright",p1);
+		if ((p2 > -1) && (change)){ // time to change this one
+			s1 = p2 + 14;
+			s2 = p2 + 19;
+			alltext = alltext.substring(0,s1) + "left" + alltext.substring(s2);
+			change = false;	
+		}
+		else {change = true;}
+		p1=p2+ 15;
+		if (p1 > alltext.length){
+			p2 = -1;
+		}
+		
+	}
+	$("#ed").val(alltext);
+
 }
 // ---------- PREP FOR WRITING TAGS & SEND WRITETAG COMMAND
 function prepTags(){
@@ -2035,14 +2116,26 @@ function createLinkDW(){
 	document.getElementById('favoriteanchorautocompcheck').checked = false;
 	
 	// go back to the edit box
-	// document.location="#editbox";
-	// calc where to put caret: starting pos + length of link + </a> + anchor text len
-	var newpos;
-	newpos = selstart + hyper.length + 15 + seltext.length;
-	setCaretPosition(newpos);
-	
+
 	$("#LinkBlock").fadeOut(300);
+		// calc where to put caret: starting pos + length of link + </a> + anchor text len
+	var newpos;
+	$("#ed").focus();
+	newpos = selstart + hyper.length + 15 + seltext.length;
+	//setCaretPosition(newpos);
+	scrollTextareaToPosition(newpos);
     
+}
+function scrollTextareaToPosition(position) {
+// thanks http://makandracards.com/makandra/29003-scroll-a-textarea-to-a-given-position-with-jquery
+  var text = $("#ed").val();
+  var textBeforePosition = text.substr(0, position);
+  $("#ed").blur();
+  $("#ed").val(textBeforePosition);
+  $("#ed").focus();
+  $("#ed").val(text);
+  setCaretPosition(position);
+  //$("#ed").setSelection(position, position); // assumes that you use jquery-fieldselection.js
 }
 
 function toggleFavoriteCheck(){
@@ -2285,7 +2378,7 @@ function readExpansions(){
                 //alert("expansionslist in jquery ajax= " + expansionslist);
             },
             error: function(){
-                //alert('Error reading blogdraft_expansions.txt');
+                updateStatus("Failed: expansions1.php");
             }
         })
         
@@ -2374,6 +2467,11 @@ function htmlize(){
     
     // update the html editor
     el.value = ht;
+    
+    // alternate callout sides
+    if (alternateCalloutSides == true){
+    	alternateCallouts();
+    }
     
     // upodate the display of the formatted text
     updatehtml();
@@ -2478,6 +2576,7 @@ function closeTags(html) {
 } 
 
 function removeBlankPs(h){
+	if (h == null){return h;}
     var hh = closeTags(h);
     // remove blanks
 	hh = hh.replace(/\n\s*\n/g, '\n');
@@ -2519,11 +2618,40 @@ function RunExpansions(){
 
 function checkforexpansion(w){
 
+  	var el = document.getElementById('ed');
+    var htxt = el.value;
+    
+    // get global selection position
+		getSelectedText();
+
+	// check for double commas to indicate an anchor term
+	if ((selstart > 0) &&(w == ",")){
+		// get prior char
+		var priorchar = htxt.substring(seltext - 1, 1);
+		if (priorchar = ","){
+			// is there a prior ,, ?
+			var openingcommas = htxt.indexOf(",,");
+			if ((openingcommas !== -1) && (openingcommas < selstart)){
+				// we have a matched set, so get the text
+				var anchortext = htxt.substring(openingcommas, selstart - openingcommas);
+				// remove the opening commas
+				htxt = htxt.substring(1, openingcommas) + htxt.substring(selstart + 2, htxt.length);
+				// get the anchortext without the commas
+				anchortext = anchortext.substring(2, anchortxt.lengh - 2);
+				// select the text
+				htxt.selectionStart = openingcommas;
+				htxt.selectionEnd = openingcommas + anchortext.length;
+				linkIt();
+				}
+		}
+		
+	}
+
     // is this word ready for expansion?
     w = trimSpacesAndLfs(w);
 	if (w == ""){return false;}
     //alert('-'+w+'-');
-    var found = false. expanup;
+    var found = false;
     var debugtest = g_expansions;
     var el = document.getElementById('ed');
     var htxt = el.value;
@@ -2711,6 +2839,12 @@ function wikipedize(){
 	
 	}	
 	
+function insertImagePath(){
+	// gets uploaded image's name from iframe
+	var ifr=document.getElementById('imageuploaderiframe'); 
+	ipel=ifr.getElementById('imgname'); alert(ipel); $('#imagepath').val(ipel);
+}
+	
 function parseWikipedia(res){
 
 
@@ -2773,8 +2907,85 @@ function convertToMarkdown(){
     alert(md);
 }
 
+// function keyboardmaestroftp(){
+// // NOPE. Needs Application library
+// 	var app = Application('Keyboard Maestro Engine');
+// app.doScript("E1E43221-151D-4A94-8254-AF5482D9E76A");
+// // or: app.doScript("ftp blog images");
+// //	-- or: app.doScript("E1E43221-151D-4A94-8254-AF5482D9E76A", { withParameter: "Whatever" });
+// }
+
+// Get file selected for upload
+function handleFileSelect(evt) {
+    var files = evt.target.files; // FileList object
+
+    // files is a FileList of File objects. List some properties.
+    var output = [];
+    for (var i = 0, f; f = files[i]; i++) {
+    $("#imagefileuploading").text(f.name);
+    $("#imagefilesize").text(f.size);
+      //output.push('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ') - ',
+        //          f.size, ' bytes, last modified: ',
+          //        f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a',
+            //      '</li>');
+    }
+    //document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
+  }
+
+function addImagePathToPage(s){
+	alert(s);
+}
+
+function doesFileExist(){
+	// get name from span
+	var fn = $("#imagefileuploading").text();
+	var furl = "http://hyperorg.com/blogger/images/" + fn;
+	$.ajax({
+    url:furl,
+    async: false,
+    type:'HEAD',
+    error: function()
+    {
+       notify(fn + ": Not yet", "ERROR");
+    },
+    success: function()
+    {
+        notify("Got it! :" + fn, "OK");
+    }
+});
+}
+
+function testRemotePHP(){
+
+ var url = 'http://www.hyperorg.com/blogger/temptest/TESTremote.php';
+
+    $.ajax({
+        url: url,
+    type: "PST",
+    async: false,
+   // jsonpCallback: 'jsonCallback',
+   crossDomain: true,
+    //contentType: "application/json",
+    async: false,
+   dataType: 'jsonp',
+   // data: {data : "123"},
+   
+   error: function(jqxhr,status,error){
+   		//alert('an error occurred:' + status + " : " + error);
+		a  =1;
+       // error: function(e) {
+       //     alert(e.statusText);
+        },
+    success: function( response ) {
+        alert("success:" +  response );
+    }
+    }); 
+
+}
+
 
 // ------- BLIND LINK OUT OF MEMORY
+
 function blindLink(){
 // not  used: Can't copy from clipboard
 	// Links selected text using contents of clipboard directly
@@ -2820,14 +3031,13 @@ function blindLink(){
 }
 
 // -------------- LINK INIT
-function linkInit(){
-    // Show Link Stuff
-    // var b = document.getElementById('linksinnerdiv');
-//     b.style.display = 'block';
-	// if selection, position it there
+function linkIt(){
+    
 	
 	//thanks https://github.com/Codecademy/textarea-helper
+	getSelectedText(); // set global cursor positions
 	var pos = $("#ed").textareaHelper('caretPos');
+	//	var pos = selstart;
 	
 	var x = pos.left ;
 	var y = pos.top + 80;

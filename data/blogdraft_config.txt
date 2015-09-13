@@ -1,4 +1,0 @@
-# BLOGDRAFT CONFIG FILE
-#	
-SecondsBetweenSaves=30
-KeystrokesBeforeSave=100

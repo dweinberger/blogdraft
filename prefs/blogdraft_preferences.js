@@ -2,14 +2,14 @@
 // Feel free to edit these.
 
 // url of page where you create posts
-var BlogPosterURL = "http:/PATH TO YOUR WP INSTALLATION/wp-admin/post-new.php";
+var BlogPosterURL = "http://YOUR_WP_ADDRESS/wp-admin/post-new.php";
 // Google search form address
-var googleSearchApiAddress = "http://PATH TO YOUR INCLUDES FOLDER/blogdraft/includes/google_api_search.html"
+var googleSearchApiAddress = "http://127.0.0.1/~YOURUSERNAME/blogdraft/includes/google_api_search.html"
 //var googleSearchApiAddress = "https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.jsø";
 // email address so can insert email with @ as a graphic to fool the spam harvesters
-var email1 = "david"; // before the at sign
-var email2 = "weinberger.org"; // after the at sign
-var atsign = "http://PATH TO AT SIGN/images/atsign.png"; // path to the at sign on the server
+var email1 = "YOURNAME"; // before the at sign
+var email2 = "YOUR EMAILHOST; // after the at sign
+var atsign = "http://YOUR_WP_INSTALL/images/atsign.png"; // path to the at sign on the server
 var atsignwidthandheight = "11";
 var autoCompleteKey = 39; // key that accepts a suggested tag completion. (39 = right arrow)
 
@@ -25,12 +25,21 @@ var QuickResizePercent = 50;
 var straightenQuotes = true;
 var KeystrokesBeforeSave = 100; // how many keystrokes before autosave the file?
 var updateAfterEveryKeystroke = true; // update the wysiwyg view after each keystroke?
+// Alternate the sides of callouts?
+var alternateCalloutSides = true;
+// Callout side? (If alternating, this is the side it will begin with)
+var calloutSide = "RIGHT"; // or "LEFT"?
 
+// -- TAGCLOUD
+// show tagcloud if "TRUE." Anything else means don't
+var showTagCloud = "TRUE";
 // Size of largest and smallest fonts in the tagcloud
 var largestfont = 24;
 var smallestfont = 6;
 // How many times does a tag have to be used to show up in the tag cloud?
 var tagThreshhold = 2;
+
+// -- SAVE FILE
 // name and path of automatic save file made while writing
 var tempSaveFile = "blogdraft_temp_save.txt";
 // include tags at end of post?
@@ -42,13 +51,7 @@ var gtweetanchor = "HANDLE";
 // 		List the categories you've set up in wordpress. Use exactly
 //		the same name here as you do there
 
-var catlist = new Array('abundance','ahole','berkman', 'blogs','broadband','big data',
-	'business','cluetrain','copyright','culture','dpla','echo chambers','education',
-	'egov','entertainment','everythingismiscellaneous','experts','free culture','free-making software',
-	'future','infohistory','internet','interop','journalism','law','libraries','liveblog',
-	'marketing','misc','moi','net neutrality','open access','philosophy','podcast',
-	'poetry','policy','politics','puzzles','reviews','science','social_media','taxonomy',
-	'teach','2b2k','travel','video','whines'
+var catlist = new Array('category1','anothercategory');
 	);
 	
 // Create one-click symbols
@@ -61,6 +64,5 @@ var catlist = new Array('abundance','ahole','berkman', 'blogs','broadband','big 
 var symbolslist = new Array('Agrave','aacute','Egrave','Eacute','ntilde','oslash','uuml',
 	'ccedil','copy','Uuml','frac12','lt','gt','euro');
 
-// XXXXXXXXX LEAVE THESE ALONE, PLEASE XXXXXXXXXXXX
 updateStatus(catlist.length + " categories loaded.");
 updateStatus(symbolslist.length + " symbols loaded.");

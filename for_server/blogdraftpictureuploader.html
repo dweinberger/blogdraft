@@ -1,0 +1,20 @@
+<html><head></head>
+<style>
+body{
+	font-family: "Helvetica Neue", Helvetica, Verdana, Arial, Sans_serif;
+}
+#uploaderh1{
+	color: "#1A46FF";
+	font-size: 1.5em;
+}
+</style>
+<body>
+
+<div id="uploaderh1">Upload image to Blogdraft</div>
+
+<form enctype="multipart/form-data" action="uploader.php" method="POST">
+<input type="hidden" name="MAX_FILE_SIZE" value="100000000" />
+Choose a file to upload: <input name="uploadedfile" type="file" /><br />
+<input type="submit" value="Upload File" />
+</form>
+</body>

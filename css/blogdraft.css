@@ -6,9 +6,10 @@
 	position:fixed;
 }
 p,li,.tags,.tinylinks, .keystrokescounter,.charsbeforesaveclass {  
-font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 12px; color: #663300
+	font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 12px; color: #663300
 }
-.revdate {  font-family: Helvetica Neue, Verdana, Arial, Helvetica, sans-serif; font-size: 12px; color: #FF8872
+.revdate {  
+	font-family: Helvetica Neue, Verdana, Arial, Helvetica, sans-serif; font-size: 12px; color: #FF8872
 }
 #blogdrafttitle {  
 	font-family: Verdana, Arial, Helvetica, sans-serif; 
@@ -98,15 +99,13 @@ h4 {  font-family: Verdana, Arial, Helvetica, sans-serif; font-size: small; font
 	padding: 10px;
 	border-radius: 20px;
 	width: 400px;
-	height: 200px;
+	
 	z-index: 300;
 	color: white;
 		background-color: rgba(128, 255, 255, 0.7);
 }
-cpicker{
-	background-color: #BA5D18;
-	color: #0F752A;
-}
+
+
 
 #posttitle {
 	margin-top:5px;
@@ -123,6 +122,13 @@ cpicker{
 	margin-left: 5px;
 	/* border-radius: 10px; */
 	
+}
+::-webkit-input-placeholder{
+	color: #FF9A5C;
+	font-weight: 200;
+}
+::-moz-placeholder {  /* Firefox 19+ */
+   color: #FF9A5C;  
 }
 #fixedtop{
  
@@ -164,28 +170,62 @@ cpicker{
 .tinylinks{
 	font-size:8pt;
 }
-.keystrokescounterclass, .keystrokescounterclasssaved{
-	font-size:8pt;
+#keystrokescounter{
+	font-size:10pt;
 	color:green;
 	font-weight:bold;
+	font-family: "Helvetica Neue", verdana,arial,san serif;
 }
-.keystrokescounterclasssaved{
-	background-color: red;
-	color:white;
+#keystrokecounterclass{
+	background-color: orange;
+	font-size:10pt;
+	color:#666600;
+	font-family: "Helvetica Neue", verdana,arial,san serif;
 }
 .charsbeforesaveclass{
 	font-size:8pt;
 	color:#666600;
 	font-weight:bold;
 }
+.calloutleft, .calloutright{
+	float: right;
+	border: 1px solid #FF5553;
+	font-size: 1.7em;
+	font-family: Georgia, Bookman, Serif;
+	border-width: 0px;
+	text-align: left;
+	color: #FF6B00;
+	padding-left: 5px;
+	padding-top: 15px;
+	padding-bottom: 15px;
+	max-width: 40%;
+}
+.calloutleft{
+	text-align: left;
+	float: left;
+	padding-left: 0px;
+	padding-right: 5px;
+	margin-right: 10px;
+}
 #updatebox{
-	font-family: Helvetica Neue, Arial, Verdana;
+	
 	color: gray;
 	height:100%;
 	overflow: scroll;
+	padding: 8px;
+}
+#updatebox p{
+	font-family:  Lora,Georgia, Bookman, serif;
+	 font-size: 16px; 
+	 color: #663300;
 }
 .symbols{
-	font-size:8pt;
+	font-size:10pt;
+	width: 12pt;
+	height: 12pt;
+	border: 1px solid #EE722E;
+	margin-left: 3px;
+	font-family: "Helvetica Neue", Helvetica,Verdana,Arial, sans-serif;
 }
 #googlediv, #wikipediadiv{
 	z-index:10000;
@@ -338,8 +378,8 @@ background-color: #AACC00;
 .tool {
 	border-width:1px;
 	border-style:solid;
-	/* background-color: #E3D7F0; */
-	border-color: #FFFDD7;
+	background-color: #EE6D0B; 
+	border-color: #EEE419;
 	color: #FFFDD7;
 	padding-left:6px;
 	padding-right:6px;
@@ -388,6 +428,9 @@ background-color: #FFE0F0;
  font-size:80%;
  color: #CC3333
  }
+ .white{
+	color: white;
+}
  .linktext { 
  font-family: Verdana, Arial, Helvetica, sans-serif; 
  font-size:85%;
@@ -401,6 +444,12 @@ background-color: #FFE0F0;
  	background: #AAAAAA;
 	color: #000000;
  }
+ .cpicker{
+	background-color: #EECCB2;
+	color: #EE50C5;
+	font-family: "Helvetica Neue", Verdana, Arial, Helvetica, sans-serif;
+	font-weight: 300;
+}
  #loading {
    
     position:   fixed;

@@ -1,5 +1,5 @@
 # blogdraft
-Client for writing and posting to WordPress
+## Client for writing and posting to WordPress
 
 I'm a total amateur and this code is embarrassing.
 
