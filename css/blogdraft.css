@@ -5,15 +5,19 @@
 #container2{
 	position:fixed;
 }
-p,li,.tags,.tinylinks, .keystrokescounter,.charsbeforesaveclass {  
-	font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 12px; color: #663300
+p,li,.tags,.tinylinks, .keystrokescounter,.charsbeforesaveclass, #tinykeystrokectr {  
+	font-family: "Helvetica Neue",Verdana, Arial, Helvetica, sans-serif; 
+	font-size: 12px; 
+	color: #663300
 }
+
 .revdate {  
 	font-family: Helvetica Neue, Verdana, Arial, Helvetica, sans-serif; font-size: 12px; color: #FF8872
 }
 #blogdrafttitle {  
 	font-family: Verdana, Arial, Helvetica, sans-serif; 
-		color: #CC3333;
+	color: #CC3333;
+	margin-left: 10px;
 	
 }
 #creditspan{
@@ -23,15 +27,26 @@ p,li,.tags,.tinylinks, .keystrokescounter,.charsbeforesaveclass {
 
 #topbox{
 	white-space: nowrap;
-	position: absolute;
+	position: fixed;
 	top: 0;
 	left: 0;
 	z-index: 10000;
+	background-color: #EDE6DE;
 }
-a {  color: #DD0000; font-family: Verdana, Arial, Helvetica, sans-serif; font-style: normal; text-decoration: underline;}
-a:hover {color: #000000;  background-color: #FFFFFF;}
-a:visited {color: #FF0033;}
-h4 {  font-family: Verdana, Arial, Helvetica, sans-serif; font-size: small; font-weight: bold; color: #CC0000; background-color: #FFCC99}
+a {  
+	color: #DD0000; 
+	font-family: "Helvetica Neue", Verdana, Arial, Helvetica, sans-serif; 
+	font-style: normal; text-decoration: underline;}
+	a:hover {color: #000000;  background-color: #FFFFFF;}
+	a:visited {color: #FF0033;
+	}
+h4 {  
+	font-family: "Helvetica Neue", Verdana, Arial, Helvetica, sans-serif; 
+	font-size: small; 
+	font-weight: bold; 
+	color: #CC0000; 
+	background-color: #FFCC99;
+}
 .tags {
 	background-color: #FFFF00;
 }
@@ -48,12 +63,12 @@ h4 {  font-family: Verdana, Arial, Helvetica, sans-serif; font-size: small; font
 	display:none;
 	z-index:200;
 }
-#imagediv, #wrapdiv, #tablediv, #postdiv, #macroexpanddiv {
+#imagediv, #wrapdiv, #tablediv, #postdiv, #macroexpanddiv, #searchdiv,#helpdiv {
 	border-width: 0;
 	background-color: #2285BA;
 	display: none;
 	position: relative;
-	top: 100px;
+	top: 30%;
 	margin-left:auto;
 	margin-right:auto;
 	padding: 30px;
@@ -61,12 +76,22 @@ h4 {  font-family: Verdana, Arial, Helvetica, sans-serif; font-size: small; font
 	width: 75%;
 	z-index: 300;
 	color: white;
+	font-family: "Helvetica Neue", Verdana, Arial, Helvetica, sans-serif; 
+}
+#searchdiv{
+	width: 400px;
+}
+#helpdiv{ width: 200px;}
+#helpdiv p{ color:white;}
+#image{
+	width: 500px;
 }
 #categories{
 	z-index: 400;
 }
 #closeOverlayBtn{
-	top:100px;
+	bottom:20px;
+	position:absolute;
 	font-size: 24px;
 	background-color:#BA24BA;
 	color:white;
@@ -137,15 +162,24 @@ h4 {  font-family: Verdana, Arial, Helvetica, sans-serif; font-size: small; font
 	left: 0px;
 	width: 100%;
 	height: 40px;
+	z-index: 3000;
 }
 #buttonbar{
 	position:relative;
 	width:100%;
 	background-color: #FF8419;
 	white-space: nowrap;
+	z-index: 2000;
 }
 .clear{
 	height:50px;
+}
+#searcharea, #replacearea{
+	height: 25px;
+	width: 250px;
+	font-family: Lora, Georgia, Serif;
+	font-size: 16px;
+	border-radius: 8px;
 }
 
   .tagclouddiv { border-style: inset;
@@ -267,15 +301,16 @@ h4 {  font-family: Verdana, Arial, Helvetica, sans-serif; font-size: small; font
 #editareawrapper {
 	/* height:500px; */
 	position:relative;
-	height:80%
+	height:60%
 	top:45px;
+	z-index: 100;
 	
 }
 #html{
 	background-color: #FFF9DF;
 	float:left; 
 	width:19%; 
-	height:100%;
+	height:98%;
 	
 }
 #edcell{
@@ -320,7 +355,61 @@ display: none;
 	position:absolute;
 	left:90px;
 }
+#imagepreviewdiv{
+	position: absolute;
+	
+}
+#imagepreview{
+   width: 200px; /* I took the width from your post and placed it in css */
+   height: 200px;
+   position:relative;
+   top: 10px;
+   left: 100px;
+	border: 5px solid white;
+	-webkit-box-shadow: 7px 7px 33px 0px rgba(0,0,0,0.9);
+	-moz-box-shadow: 7px 7px 33px 0px rgba(0,0,0,0.9);
+	box-shadow: 7px 7px 33px 0px rgba(0,0,0,0.9); 
+}
 
+/* This will style any <img> element in .parent div */
+#imagepreview img {
+   height: 100%;
+   width: 100%;
+}
+
+.placeholder{
+	background-color: gray;
+	color: white;
+	font-family: Verdana, Arial, Helvetica, sans-serif; ;
+	height: 60px;
+	border: 1px dotted black;
+	text-align: center;
+	position: relative;
+}
+#greenlightspan{
+	display:none;
+	height: 10px;
+	z-index: 100001;
+	position: absolute;
+	top: 10px;
+	left: 600px;
+}
+#redcirclespan{
+	font-size: 8px;
+	width:8px;
+	height:8px;
+	border-radius:50%;
+	color: white;
+	/* line-height:500px; */
+	text-align:center;
+	background:red;
+	border: 0px solid red;
+	padding: 3px;
+	font-family: Consolas,Monaco,sans-serif;
+	position: absolute;
+	top: 10px;
+	left: 600px;	
+}
 .tagcloudtext {
  font-family: Verdana, Arial, Helvetica, sans-serif; 
  color: #80FFFF;

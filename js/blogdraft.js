@@ -28,7 +28,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
-var revdate = "August 15, 2015";
+var revdate = "Sept. 12, 2015";
 
 // ------------- S E T U P  [obsolete?]-=---------------------------------
 // IN FIREFOX, set signed.applets.codebase_principal_support to true (about:config)
@@ -83,26 +83,39 @@ var postspace = "";
 var keystrokectr = 0;
 var chosencolor="";
 var browsertype="";
+var gResults = new Array();
+var gCurrentSearchResult = -1;
 
 
 // -------- KEY CAPTURE
 
 function init(){
+
+	loadkeycapturer(); // determines browser type
 	
 	sizeEditAndWysiAreas();	
+	// set fontsize and family of edit area
+	changeCSSrule(".edstyle","FONTSIZE",editAreaFontsize);
+	changeCSSrule(".edstyle","FONTFAMILY",editAreaFontfamily);
+	changeCSSrule("#updatebox p","FONTSIZE",wysiAreaFontsize);
+	changeCSSrule("#updatebox p","FONTFAMILY",wysiAreaFontfamily);
+	//$("#ed").css("font-size",editAreaFontsize);
+	//$("#ed").css("font-family", editAreafontfamily);
+	// set fontsize of wysi area
+	// $("#updatebox").css("font-size",wysiAreaFontsize);
+// 	$("#updatebox").css("font-family", wysiAreafontfamily);
 	
+	// fade in the edit box, for no good reason
 	$("#ed").animate({opacity : 1.0}, 1000, function(){});
 	
 	// hide the preview area?
 	if (showWysiArea==false){
 		ShowHideWysi(); // this will toggle it to hidden
 	}
-	if (includeTags==false){
-		document.getElementById("includetagscheck").checked = false;
-	}
 	
 	
-	loadkeycapturer();
+	
+	
 	readTags();
 	readLinks();
 	readExpansions();
@@ -158,6 +171,12 @@ function init(){
 	$.ctrl('B', function() {
 		toolselect("boldme");
 	});
+	$.ctrl('F', function() {
+		replaceAll();
+	});
+	$.ctrl('G', function() {
+		searchGoogle();
+	});
 	$.ctrl('I', function() {
 		toolselect("italme");
 	});
@@ -179,9 +198,7 @@ function init(){
 	$.ctrl('S', function() {
 		toolselect("saveme");
 	});
-	$.ctrl('G', function() {
-		searchGoogle();
-	});
+	
 	$.ctrl('', function() {
 		toolselect("");
 	});
@@ -221,10 +238,104 @@ function init(){
 	if (showTagCloud == "TRUE"){
 		buildTagCloud();
 	}
+	
+	// turn on checkbox for imageplaceholder
+	if (gImagePlaceholder){
+		$("#imageplaceholder").prop("checked",true);
+	}
+	else {
+		$("#imageplaceholder").prop("checked",false);
+	}
 
 	// handle getting file selected for image upload
 	//document.getElementById('fileselector').addEventListener('change', handleFileSelect, false);
+	
+	// autodupate checkbox
+	
+		
+    $('#autoupdatehtmlcheck').change(function() {
+        if($(this).is(":checked")) { // state after click
+            updateAfterEveryKeystroke = true;
+        }
+        else{
+       		updateAfterEveryKeystroke = false;
+        }       
+    });
+	
+	
+    $('#synchroscroll').change(function() {
+        if($(this).is(":checked")) { // state after click
+            syncscroll = true;
+        }
+        else{
+       		syncscroll = false;
+        }       
+    });
+     $('#synchrofont').change(function() {
+        if($(this).is(":checked")) { // state after click
+            synchfont("TRUE");
+        }
+        else{
+       		synchfont("FALSE");
+        }       
+    });
+	
+	$("#imageplaceholder").change(function(){
+		if($(this).is(":checked")) { // state after click
+            gImagePlaceholder = true;
+        }
+        else{
+       		gImagePlaceholder = false;
+        }       
+	});
+	
+	// synchronize scrolling
+	$('#ed').on('scroll', function () {
+		if(syncscroll){
+    		$('#updatebox').scrollTop($(this).scrollTop());
+    	}
+});
 
+}
+
+function changeCSSrule(whichclass,whichstyle,whichsetting){
+	if (browsertype != "webkit"){
+		notify(browsertype + " browser type not supported.", "ERROR");
+		return;
+	}
+	var ss = document.styleSheets;
+
+        for (var i=0; i<ss.length; i++) {
+            var rules = ss[i].cssRules || ss[i].rules;
+			if (rules != null){
+				for (var j=0; j<rules.length; j++) {
+					if (rules[j].selectorText === whichclass) {
+						if (whichstyle == "FONTSIZE"){
+							rules[j].style.fontSize = whichsetting;
+						}
+						if (whichstyle == "FONTFAMILY"){
+							rules[j].style.fontFamily = whichsetting;
+						}
+					}
+				}
+            }
+        }
+}
+
+function synchfont(w){
+	// match font in wysi to edit area
+	if (w == "TRUE"){
+		var fontfam = $("#ed").css("fontFamily");
+		var fontsize = $("#ed").css("fontSize");
+		//document.getElementById("update").style.fontSize="50px";
+		$("#updatebox p").css({"font-size" : fontsize, "font-family" : fontfam});
+		
+		
+	}
+	if (w == "FALSE"){
+		$("#updatebox p").css({"font-family" : wysiAreaFontfamily, "font-size" : wysiAreaFontsize});
+	}
+	
 }
 
 function loadkeycapturer(){
@@ -237,7 +348,9 @@ function loadkeycapturer(){
    if (browserstr.indexOf("chrome") > -1) {
        browsertype = "webkit";
        document.getElementById('ed').addEventListener('keydown', cK, false);
+       document.getElementById('ed').addEventListener('keyup', updatehtml, false);
     }
+    
    if (browserstr.indexOf("safari") > -1) {
        browsertype = "webkit";
        document.getElementById('ed').addEventListener('keydown', cK, false);
@@ -258,31 +371,39 @@ function loadkeycapturer(){
 
 
 
-
 function cK(e){
 
 	// keystroke processor
-	var ctl = false;
+
+	var cmd = false;
+
 	// how many keystrokes? Time to save?
     keystrokectr++;
-    if (updateAfterEveryKeystroke){
-    	updatehtml();
-    }
+  
 	if (keystrokectr > KeystrokesBeforeSave) {
 		keystrokectr=0;
 		//AutoSaveFile();	
 		saveFile("QUIET");
-		// upodate wysi view
-		if (document.getElementById("autoupdatehtmlcheck").checked == true )
-		{
-			//updatehtml(); // now updated after every keystroke
-		}
+	}
+	if (keystrokectr == 10){
+		// replace save light with needs save light
+		//$("#saveLight").attr("src","./images/redlight.png");
+		//$("#tinykeystrokectr").css({"background-color" : "white", "border-color" : "red", "color" : "black"});
+		// hide the green, show the red
+		$("#greenlightspan").hide();
+		$("#redlightspan").fadeIn(300);
 	}
 	// insert keystroke counter
-	$("#keystrokescounter").text(KeystrokesBeforeSave - keystrokectr) ;
-	if (keystrokectr==0) {
-		document.getElementById("keystrokecounter").innerHTML = "SAVED";
-	}
+		// insert at bottom
+	// $("#keystrokescounter").text(KeystrokesBeforeSave - keystrokectr) ;
+// 	if (keystrokectr==0) {
+// 		document.getElementById("keystrokecounter").innerHTML = "SAVED";
+// 	}
+	// insert at top
+	$("#tinykeystrokectr").text(KeystrokesBeforeSave - keystrokectr) ;
+	// if (keystrokectr==0) {
+// 		document.getElementById("keystrokecounter").innerHTML = "SAVED";
+// 	}
 	
 	
 	// The line below doesn't work but should work
@@ -348,6 +469,9 @@ function cK(e){
                 
             }
         }
+    }
+      if (updateAfterEveryKeystroke){
+    	updatehtml();
     }
 
 }
@@ -511,6 +635,19 @@ function resizeTextArea(){
 	elta.style.width = "100%";
 }
 
+function pulse(idstring){
+	$("#saveLight").pulse({
+    opacity: [0,1]
+}, {
+    duration: 100, // duration of EACH individual animation
+    times: 5, // Will go three times through the pulse array [0,1]
+    easing: 'linear', // easing function for each individual animation
+    complete: function() {
+        //alert("I'm done pulsing!");
+    }
+});
+}
+
 
 function openColorPicker(){
 	// create table with 216 colors
@@ -574,6 +711,62 @@ function addTagFromText(){
         }
         tt.value = ts + seltext;
     }
+}
+
+//------ SEARCH
+
+ // not used
+function searchFor(){
+	var searchterm = $("#searcharea").val();
+	if (searchterm == "") {
+		notify("Nothing selected.", "ERROR");
+		return;
+	}
+	// build global array of results
+	gResults.length = 0; // initialize
+	var e =$("#ed").val();
+	var done = false;
+	var pos = 0, newpos = 0;
+	while (done != false){
+		newpos = e.indexOf(searchterm, pos + 1);
+		if (pos > -1){
+			gResults.push(pos);
+			newpos = pos + 1;
+			if (newpos >= e.length){
+				done = true;
+				}
+		}
+		else {
+			done = true;
+		}
+	}
+	gCurrentSearchResult = 0;
+	highlightSearchResult(0,searchterm);
+}
+
+function replaceAll(){
+	var searchterm = $("#searcharea").val();
+	var replaceterm = $("#replacearea").val();
+	if ((searchterm == "")) {
+		notify("Specify search term", "ERROR");
+		return;
+	}
+	var e =$("#ed").val();
+	var rep = searchterm; 
+	// case insensitive?
+	if ($("#casesensitivecheck").is(":checked")){
+		var regex = new RegExp(rep, 'g');
+	}
+	else {
+		var regex = new RegExp(rep, 'gi');
+	}
+
+	
+	e = e.replace(regex, replaceterm);
+	$("#ed").val(e);
+	
+	closeOverlay();
+	updatehtml();
 }
 
 
@@ -1007,7 +1200,55 @@ function createTable(){
 function updatehtml(){
     var h = document.getElementById('updatebox');
     var e = document.getElementById('ed');
-    h.innerHTML = e.value;
+    var s = e.value;
+    // replace images with placeholder?
+    if (gImagePlaceholder){
+    	var done= false;
+    	var p1 = 0, p2 = 0, p3,p4,p5, alt="", backs="",src="",fname="";
+    	while (!done){
+    		p1 = s.indexOf("<img",p2);
+    		alt="";
+    		fname = "";
+    		if (p1 > -1){ // got "<img"
+    			// get end
+    			p3 = s.indexOf(">",p1);
+    			// no end > ? then we're done
+    			if (p3 == -1){
+    				done = true;
+    			}
+    			// get everything after end of img markup
+    			backs = s.substring(p3 + 1);
+    			// get filename
+    			// get ALT
+    			p4 = s.indexOf("src=",p1);
+    			if ((p4 > -1) && (!done) && (p4 < p3)) { // is this ALT in this img?
+    				p5 = s.indexOf('"', p4 + 5);
+						if ((p5 > -1) && (p5 < p3)){
+							src = s.substring(p4 + 5, p5);
+							p6 = src.lastIndexOf("/");
+							if (p6 > -1){
+								fname = src.substring(p6 + 1);
+							}
+						}
+					}
+    			// replace
+    			s = s.substring(0,p1) + "<div class='placeholder'>";
+    			if (fname != ""){
+    				s = s + fname;
+    			}
+    			else {
+    				s = s + " [ IMAGE ] ";
+    			}
+    			s = s + "</div>";
+    			s = s + backs;
+    			p2 = p1 + 1; 
+    		}
+    		else {
+    			done = true;
+    		}
+    	}// while found <img
+   } 
+    h.innerHTML = s;   
 }
 
 function toolselect(which){
@@ -1329,7 +1570,7 @@ function AutoSaveFile(){
 function saveFile(quiet){
     var legittitle = getLegitTitle();
     if (legittitle == -1){
-    	notify("Save cancelled.");
+    	notify("No title. Save cancelled.");
     	return
     }
     legittitle = legittitle + ".txt";
@@ -1338,7 +1579,7 @@ function saveFile(quiet){
     var tags = document.getElementById("tagstextarea").value
     var s = "TITLE=" + posttit + "\n\r" + "BODY=" + wysival;
     
-    
+     
      $.ajax({
         type: "POST",
         url: "./php/writesavefile.php",
@@ -1347,17 +1588,28 @@ function saveFile(quiet){
         data: {"savedbody" : wysival, "savedtitle" : legittitle, "internaltit" : posttit , "tags" : tags},
         success: function(dirresult){
            if (quiet != "QUIET") {
-				notify(legittitle + " saved.");
+				notify(legittitle + " saved. (success)");
 				keystrokectr = 0 ;
 				$("#keystrokecounter").innerHTML = "SAVED";
+			
 			}
         },
         error: function(e){
         	if (e.statusText !== "OK"){
-           	 notify('Error reading blogdraft_expansions.txt: ' + e.statusText, "ERROR");
+           	 notify('Error saving file:  ' + e.statusText, "ERROR");
            	 }
            	 else{
-           	 	notify(legittitle + " saved.", "OK");
+           	 	// flash light
+           	 	//$("#saveLight").attr("src","./images/greenlight.png");
+           	 		//$("#tinykeystrokectr").css({"background-color" : "green", "border-color": "green", "color" : "white"});
+				//$("#tinykeystrokectr").html("&nbsp;&nbsp;&nbsp;&nbsp;");
+				$("#greenlightspan").show();
+				$("#tinykeystrokectr").hide();
+           	 	//pulse("#tinykeystrokectr");
+           	 	notify("Saved routinely");
+           	 	 if (quiet != "QUIET") {
+           	 		notify(legittitle + " saved.", "OK");
+           	 	}
            	 }
         }
     })
@@ -1515,10 +1767,28 @@ function insertimage(){
     
     // close it
     closeOverlay();
-    //setCaretPosition(selstart);
+  	updatehtml();
     
 }
-
+function verifyImage(){
+	// if it's visible, then hide it
+	if ($("#imagepreviewdiv").is(":visible")){
+		$("#imagepreviewdiv").slideUp(400);
+		return;
+	}
+	var src = $("#imagepath").val();
+	if (src == ""){
+		notify("No image path provided","ERROR");
+		return
+	}
+	// clear old image
+	$("#imagepreview").html("");
+	// create new element for it
+	var img = document.createElement("img");
+	img.setAttribute("src",src);
+	$("#imagepreview").append(img);
+	$("#imagepreviewdiv").slideDown(400);
+}
 function copyImageLink(){
 	// copy link to server to wrapper link
 	document.getElementById("imagelinktotxt").value = document.getElementById("imagepath").value
@@ -1563,6 +1833,7 @@ function insertCallout(){
 	 var callout = "<span class='" + whichclass + "'>&ldquo;" + thetext + "&rdquo;</span>"
 	var insertpt = 22 + whichclass.length;
 	insertText(callout, selstart,insertpt);
+	updatehtml();
 }
 
 function alternateCallouts(){
@@ -1756,9 +2027,7 @@ function readTwitterLinks(){
 // ------ READ TAGS
 function readTags(){
 	// skip if we're not doing tags
-   if (document.getElementById("includetagscheck").checked != true){
-   	 return;
-   } 
+  
     updateStatus('Reading tags');
        
     $.ajax({
@@ -1770,7 +2039,7 @@ function readTags(){
            
         },
         error: function(e){
-            alert('Error reading blogdraft_expansions.txt:' + e);
+            alert('Error reading tags: ' + e);
         }
     })
 
@@ -2377,8 +2646,8 @@ function readExpansions(){
                 expansionslist = expresult;
                 //alert("expansionslist in jquery ajax= " + expansionslist);
             },
-            error: function(){
-                updateStatus("Failed: expansions1.php");
+            error: function(e){
+                updateStatus("Expansions Failed: " + e.statusText);
             }
         })
         
@@ -3074,6 +3343,7 @@ function linkIt(){
 		(seltext.indexOf(".net") > 0)){
 		var ss = "<a href='http://" + seltext + "'>" + seltext + "</a>";
 		inserttextatcursor(ss);
+		updatehtml();
 		return
 	}
 	
@@ -3264,6 +3534,26 @@ function linkIt(){
     linkbox.setSelectionRange(0, linkbox.value.length - 1);
     linkbox.focus();
     
+    updatehtml();
+    
+}
+
+function changeFont(which){
+	// change fontsize of ed textarea
+	
+	// get current fontsize
+	var currentfontsize = $("#ed").css("font-size");
+	// get rid of px at the end
+	currentfontsize = currentfontsize.substring(0,currentfontsize.length - 2);
+	currentfontsize = parseInt(currentfontsize);
+	if (which == "+"){
+		currentfontsize = currentfontsize + 4;
+		$('#ed').css("font-size", currentfontsize + "px");
+	}
+	if ((which == "-") && (currentfontsize > 8)){
+		currentfontsize = currentfontsize - 4;
+		$('#ed').css("font-size", currentfontsize + "px");
+	}
 }
 
 function copyurl(c){
@@ -3649,18 +3939,17 @@ function resizeWysiDisplay(w){
 	// is it default?
 	if (w == -1) { // use QuickResize
 	  // get state of the btn
-	  var el = document.getElementById("resizewysibtn");
-	  var lbl = el.value;
+	  var lbl = $("#resizewysibtn").text();
 	  var ww;
-	  if (lbl == "QuickResize") {
+	  if (lbl == "Quick resize") {
 	  	  ww = QuickResizePercent;
-		  el.value="ReturnSize";
+		  $("#resizewysibtn").text("Return size");
 	  }
 	  else {
 	  	ww = defaultWysiAreaWidth;
 		// strip off percent
 		ww = ww.substr(0, ww.length-1);
-		el.value="QuickResize";
+		$("#resizewysibtn").text("Quick resize");
 	  }
 	
 	  // turn it into pixels
@@ -3686,27 +3975,6 @@ function resizeWysiDisplay(w){
 	
 	sizeEditAndWysiAreas();
 }
-
-
-
-function doFTP(){
-    var ftpurl = "ftp://evident:soph1a--@hyperorg.com";
-    //window.location=ftpurl;
-    window.open(ftpurl, "FTP blogdraft");
-}
-
-function openFTPsite(){
-
-    var username = "evident";
-    var password = "sop;h1a--";
-    var server = "evident.com;"
-    if (username && password && server) {
-        //var ftpsite = "ftp://" + username + ":" + password + "@" + server;
-        var ftpsite = "ftp://evident:soph1a--@hyperorg.com";
-        window.location = ftpsite;
-    }
-}
-
 
 
 function updateStatus(txt){

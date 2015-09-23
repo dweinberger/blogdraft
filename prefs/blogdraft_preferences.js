@@ -13,6 +13,11 @@ var atsign = "http://YOUR_WP_INSTALL/images/atsign.png"; // path to the at sign 
 var atsignwidthandheight = "11";
 var autoCompleteKey = 39; // key that accepts a suggested tag completion. (39 = right arrow)
 
+var editAreaFontsize = "20px"; // only specify in px
+var editAreaFontfamily = "Helvetica Neue";
+// fontsize and family for wysi display area
+var wysiAreaFontsize = "16px";
+var wysiAreaFontfamily = "Bookman,Georgia";
 // how wide should the preview area be initially?
 var wysiAreaWidth = "20%"; // width of wysiwyg preview area
 var defaultWysiAreaWidth = wysiAreaWidth; // set this for quick resize
@@ -29,6 +34,8 @@ var updateAfterEveryKeystroke = true; // update the wysiwyg view after each keys
 var alternateCalloutSides = true;
 // Callout side? (If alternating, this is the side it will begin with)
 var calloutSide = "RIGHT"; // or "LEFT"?
+// scroll the two windows together?
+var syncscroll = true;
 
 // -- TAGCLOUD
 // show tagcloud if "TRUE." Anything else means don't

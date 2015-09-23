@@ -1,12 +1,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
   <head>
-	<meta content="text/html;" http-equiv="content-type">
+	<meta http-equiv="Content-Type" content="text/html">
 	<title>Blogdraft</title>
 	<link rel="icon" type="image/jpg" href="favicon.png">
 	<script type="text/javascript" src="includes/jquery-2.1.4.min.js"></script>
 	<script type="text/javascript" src="includes/jquery-ui-1.11.4.custom/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="includes/textarea-helper.js"></script>
+	<script type="text/javascript" src="includes/jquery.pulse.js"></script>
 	<script type="text/javascript" src="includes/json2.min.js"></script>
 	<script type="text/javascript" src="includes/Markdown.Converter.js"></script>
 	<script type="text/javascript" src="js/blogdraft.js"></script>
@@ -25,6 +26,7 @@
 	</script> 
 </head>
 <body>
+
  <div id="loading" style="display: none"></div>
   <div id="insertme" class="tool"  style="display:none;"></div>
   <!-- GOOGLE SEARCH RESULTS -->
@@ -33,7 +35,7 @@
           <!-- GOOGLE SEARCH BOX -->
           <script>
 				(function() {
-				  var cx = 'ADD YOURS';
+				  var cx = '007117154255002665735:enanyjbed1o';
 				  var gcse = document.createElement('script'); gcse.type = 'text/javascript';
 				  gcse.async = true;
 				  gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
@@ -49,60 +51,69 @@
      <div id="wikipediadiv" style="display:none">
      	<div id="wpresultsdiv"></div>
      </div>
+     
+     
     <div id="container">
     
 		<!-- Horizontal button bar -->
-         <div id="fixedtop">
+		 <div id="fixedtop">
          
-    	<!----= POST TITLE ----> 
-		<div id="topbox">
-			<a name="titlebox"></a><textarea id="posttitle"></textarea>
-			<span id="blogdrafttitle">Blogdraft <span id="creditspan">by
-			  D. Weinberger</span> <span id="revdatespan" name="revdatespan"
-			class="revdate">date</span>
-			</span>
-		
-         
-          <div id="buttonbar">   
-        
-          <span class="tool" onclick="toolselect('boldme')"><b>B</b></span>
-            <span class="tool" onclick="toolselect('italme')"><em>I</em></span>
-            <span class="tool" onclick="toolselect('underme')"><u>U</u></span> <span
-              class="tool"
-              onclick="toolselect('linkme')">Link</span>
-            <span class="tool" onclick="twitLink()">TwitLink</span> <span class="tool"
-              onclick="toolselect('indentme')">Block</span>
-            <span class="tool" onclick="toolselect('lineme')">hr</span> <span class="tool"
-              onclick="addTagFromText();">tag</span>
-            <span class="tool" onclick="toolselect('brme')">br</span> <span class="tool"
-              onclick="toolselect('pme')">P</span>
-            <!--input onclick="linkInit();" value="Link It" type="button"--> 
-            <span class="tool bright" onclick="htmlize();">htmlize</span>
-            <span class="tool" onclick="saveFile();">Save</span>
-            <span class="tool bright" onclick="searchGoogle();">Google</span>
-             <span class="tool" onclick="wikipedize()">Wikipdize</span>
-            <!--input type="button" id="postbtn" onclick="showiframe('post')"  class='smallbutton' value="Blog it" style="display: hide";-->
-           <span class="tool minorbutton" onclick="saveDraft();">Draft</span>
-            <!-- <input type="button" onclick="readDraftDir();" value="Get Drafts"> -->
-          
-            
-            
-            <!--input onclick="clearall();" class="minorbutton" value="Clear" type="button"-->  
-              
-            <span class="tool" onclick="ShowHideDiv('postdiv');">Post it</span>
-            <span class="tool smallbutton" onclick="updatehtml()">Update</span>
-            <span class="tool tinybutton" id="resizewysibtn" onclick="resizeWysiDisplay(-1)">Quick resize</span>
-            <span class="tool minorbutton" onclick='$("#sizingbardiv").fadeIn(300)'>Resize</span> 
-            <span class="tool minorbutton" onclick="ShowHideWysi(); "> Show/Hide"</span>
-              <span class="tool minorbutton" id="resizetextspan" onclick="resizeTextArea2()">Edit
-              Area+</span>
-         
+			<!----= POST TITLE ----> 
+			<div id="topbox">
+				<a name="titlebox"></a><textarea id="posttitle" placeholder="title goes here"></textarea>
+				
+				<!--span id="tinykeystrokectr"-->
+					<div id="greenlightspan">
+						<img src="./images/greenlight.png"  id="saveLight">
+					</div>
+					<div id="redcirclespan">
+						&nbsp;&nbsp;&nbsp;&nbsp;
+					</div>
+				<!--/span -->
+				<span id="blogdrafttitle">Blogdraft <span id="creditspan">by D. Weinberger</span> <span id="revdatespan" name="revdatespan"
+				class="revdate">date</span>
+				</span>
 
-      <!--form method="post" name="wysiform" id="wysiform"-->
- 
-        
-        </div> <!-- buttonbar -->
-        </div>
+				<div id="buttonbar">   
+
+					<span class="tool" onclick="toolselect('boldme')"><b>B</b></span>
+					<span class="tool" onclick="toolselect('italme')"><em>I</em></span>
+					<span class="tool" onclick="toolselect('underme')"><u>U</u></span> <span
+					  class="tool"
+					  onclick="toolselect('linkme')">Link</span>
+					<span class="tool" onclick="twitLink()">TwitLink</span> <span class="tool"
+					  onclick="toolselect('indentme')">Block</span>
+					<span class="tool" onclick="toolselect('lineme')">hr</span> <span class="tool"
+					  onclick="addTagFromText();">tag</span>
+					<span class="tool" onclick="toolselect('brme')">br</span> <span class="tool"
+					  onclick="toolselect('pme')">P</span>
+					<!--input onclick="linkInit();" value="Link It" type="button"--> 
+					<span class="tool bright" onclick="htmlize();">htmlize</span>
+					<span class="tool" onclick="saveFile();">Save</span>
+					<span class="tool bright" onclick="searchGoogle();">Google</span>
+					 <span class="tool" onclick="wikipedize()">Wikipdize</span>
+					<!--input type="button" id="postbtn" onclick="showiframe('post')"  class='smallbutton' value="Blog it" style="display: hide";-->
+					<span class="tool minorbutton" onclick="saveDraft();">Draft</span>
+					<!-- <input type="button" onclick="readDraftDir();" value="Get Drafts"> -->
+
+
+
+					<!--input onclick="clearall();" class="minorbutton" value="Clear" type="button"-->  
+  
+					<span class="tool" onclick="ShowHideDiv('postdiv');">Post it</span>
+					<span class="tool smallbutton" onclick="updatehtml()">Update</span>
+					<span class="tool tinybutton" id="resizewysibtn" onclick="resizeWysiDisplay(-1)">Quick resize</span>
+					<span class="tool minorbutton" onclick='$("#sizingbardiv").fadeIn(300)'>Resize</span> 
+					<span class="tool minorbutton" onclick="ShowHideWysi(); "> Show/Hide"</span>
+					  <span class="tool minorbutton" id="resizetextspan" onclick="resizeTextArea2()">Edit
+					  Area+</span>
+
+
+					<!--form method="post" name="wysiform" id="wysiform"-->
+
+
+					</div> <!-- buttonbar -->
+				</div>
          <div class="clear"></div>
     
 		</div> <!-- fixed topbox -->
@@ -141,33 +152,33 @@
     
    
       <!------ END EDIT AREA ------->
-      <div style="clear:both"><br /></div>
-      
-      <!-- SYMBOLS -->
-      <div id="bottomcontrols">
-      <span id="symbolsspan"> 
-      </span>
-        <!-- KEYSTROKE COUNTER --> <span style="background-color:orange"><span
-            id="charsentered">-</span>
-          <span id="charsbeforesave"></span></span>
-        <!-- COLOR PICKER --> 
-        &nbsp;<span class="tool cpicker" onclick="openColorPicker()"><b>
-            &nbsp;Color Picker</b><span id="chosencolor"></span></span><span id="colorpicker"><span>
-          </span></span></p>
-      <!-- AREA BUTTONS --> 
-       <input type="button" value="TEST" onclick="convertToMarkdown()">
+      <div style="clear:both"></div>
+    
+	
+	
+	<!-- AREA BUTTONS --> 
+       <input type="button" value="Callout" onclick="insertCallout()">
       <input class="smallbutton" name="hideimagediv" onclick="ShowHideDiv('imagediv');"
         value="images"
         placename="imagespot"
         type="button">
+    <input type="button" value="Pulse" onclick="pulse('saveLight')">
       <input class="smallbutton" name="hidewrapdiv" onclick="ShowHideDiv('wrapdiv');"
         value="HTML Wrapper"
         placename="wrapspot"
+        type="button">
+     <input class="button" name="search" onclick="ShowHideDiv('searchdiv');"
+        value="Search & Replace"
+        placename="searchspot"
         type="button">
       <input class="smallbutton" name="hidetablediv" onclick="ShowHideDiv('tablediv');"
         value="Tables"
         placename="tablespot"
         type="button">
+      
+    <input onclick="removeReturns();" class="minorbutton" value="Remove CRs" type="button">
+	<input onclick="loadSaveFile();" class="minorbutton" value="Load Saved File" type="button">
+	<input onclick="insertEmail();" class="minorbutton" value="Email Add." type="button">
       <input class="smallbutton" name="importsave" onclick="ShowHideDiv('importsave');"
         value="Restore Saved File"
         placename="savedfilespot"
@@ -176,7 +187,44 @@
         value="MacroExpand"
         placename="macroexpandspot"
         type="button">
+    <input class="smallbutton" value="Help" name="helppanel" onclick="ShowHideDiv('helpdiv');">
     </div>
+	
+	<!-- Prefs -->
+	<span class="tinylinks"> 
+	<input type="button" value="aA" title="Increase font size" onclick="changeFont('+')">  
+	<input type="button" value="Aa" title="Increase font size" onclick="changeFont('-')"> 
+	<input  id="synchroscroll"  checked="checked"  type="checkbox"> Sync scroll
+	<input  id="synchrofont"  type="checkbox" title="wysi font = edit font"> Sync Font
+	<input id="imageplaceholder" type="checkbox" title="Show placeholder in wysi box"> Placeholder img
+	<input value="false" id="autosavecheck"  checked="checked"  type="checkbox"> Auto save      
+	<input id="createps" checked="checked" type="checkbox"> Auto-insert &lt;p&gt;
+	<input id="autoupdatehtmlcheck" checked="checked"  type="checkbox">  Auto-update Preview  
+	<!-- Edit Auto links in separate window -->
+	<a href="autolinkconfig.html" target="_blank” class="tags" title="Edit auto links and favorites in new window">Edit autolinks</a> 
+    
+        
+          Auto save: <input value="false" id="autoexpandcheck" checked="checked"
+            type="checkbox">
+          Auto expansions: <input value="false" id="includetagscheck" checked="checked"
+            type="checkbox">
+          Include tags </span>
+        <!-- KEYSTROKE COUNTER --> 
+        <!--span id="keystrokecounterclass">
+        `	<span id="keystrokescounter">100</span>
+          	 until next save</span -->
+      
+      
+      <!-- SYMBOLS -->
+      <div id="bottomcontrols">
+      <span id="symbolsspan"> 
+      </span>
+      
+        <!-- COLOR PICKER --> 
+        &nbsp;<span class="tool cpicker" onclick="openColorPicker()"><b>
+            &nbsp;Color Picker</b><span id="chosencolor"></span></span><span id="colorpicker"><span>
+          </span></span></p>
+      
       <!-- LINKS -->
       <div id="LinkBlock">
         <a name="linksspot"></a>
@@ -201,13 +249,12 @@
             <input onclick="addTDL('gov');" value="gov" class="smallbutton" type="button">
             <input onclick="addTDL('net');" value="net" class="smallbutton" type="button">
             <input value="false" id="favoriteanchorcheck" type="checkbox"> <span
-              class="smalllabel">Save
-              as favorite:</span> <textarea id="favoriteanchortext" style="border: 0; overflow: hidden; width: 150px; height: 15px;"></textarea>
-            <span class="smalllabel">Auto-insert the link (single words only):</span>
+              class="white smalllabel">Save as favorite:</span> <textarea id="favoriteanchortext" style="border: 0; overflow: hidden; width: 150px; height: 15px;"></textarea>
+            <span class="white smalllabel">Auto-insert the link (single words only):</span>
             <input value="false" id="favoriteanchorautocompcheck" onclick="toggleFavoriteCheck();"
               type="checkbox"><br>
-            <span class="smalllabel" id="addTwitterLinkSpan"> <span class="smalllabel">Insert
-                twitlink:</span> <textarea id="twitterLinkTxt" style="border: 0; overflow: hidden; width: 150px; height: 15px;"></textarea>
+            <span class="white smalllabel" id="addTwitterLinkSpan"> 
+            <span class="white smalllabel">Insert twitlink:</span> <textarea id="twitterLinkTxt" style="border: 0; overflow: hidden; width: 150px; height: 15px;"></textarea>
               <input onclick="insertTwitterLink()" value="Insert Twit" type="button">
             </span> </form>
       </div>
@@ -251,28 +298,27 @@
       
       
    
-          <div> <input onclick="removeReturns();" class="minorbutton" value="Remove CRs"
-              type="button">
-            <input onclick="loadSaveFile();" class="minorbutton" value="Load Saved File"
-              type="button">
-            <input onclick="ShowHideDiv('imagediv');" class="minorbutton" value="Insert image"
-              type="button">
-            <input onclick="insertEmail();" class="minorbutton" value="Email Add."
-              type="button">
-           <input id="createps" checked="checked" type="checkbox">
-            <span class="tinylinks">Auto-insert &lt;p&gt;
-              <!--<input name="Submit" type="submit" onSubmit="formatText('ViewText','wysi');" -->
-            </span> <span class="tinylinks"> <input id="autoupdatehtmlcheck" checked="checked"
-                type="checkbox">
-              Auto-update Preview </span> </div>
-              
-              
+        
               
     <!--- TRANSOVERLAY -->
     <div id="transoverlay">
     	<!-- close button -->
     	<br><br><input type="button" value="Close" onclick="closeOverlay()" id="closeOverlayBtn">
     
+        <!---  SEARCH AND REPLACE -->
+      <div id="searchdiv" class="panel">
+      <a name="searchspot"></a>
+         	<div style="margin-left: auto; margin-right:auto;">
+         	<table style="border-width:0">
+         	<tr><td>
+         		<textarea id="searcharea"></textarea></td><tr>
+         	<tr><td>
+         		<textarea id="replacearea"></textarea><input type="button" value="Search & Replace" onclick="replaceAll()">
+         		<input type="checkbox" id="casesensitivecheck"><span class="wraptextfont">Case sensitive</span>
+         		</td></tr></table>
+         	</div>    
+        </div>
+      
       
       <!---  WRAP IN HTML -->
       <div id="wrapdiv" class="panel htmlwrapdiv">
@@ -340,32 +386,119 @@
        
       </div>
       
-            <!-- IMAGE -->
-      <div id="imagediv" class="imagediv" style="display:none;" > 
+      <!--HELP PANEL -->
+      <div id="helpdiv" style="display:none">
+      <a name="helpspot"></a>
+       
+          <table border ="0">
+          <tr>
+          	<td><p>^B</td>
+          	<td><p>Bold</td>
+          </tr>
+           <tr>
+          <tr>
+          	<td><p>^F</td>
+          	<td><p>Replace</td>
+          </tr>
+           <tr>
+          	<td><p>^G</td>
+          	<td><p>Google</td>
+          </tr>
+           <tr>
+           <tr>
+          	<td><p>^I</td>
+          	<td><p>Italics</td>
+          </tr>
+           <tr>
+          	<td><p>^K</td>
+          	<td><p>Blockquote</td>
+          </tr>
+           <tr>
+          	<td><p>^O</td>
+          	<td><p>Blind Link</td>
+          </tr>
+           <tr>
+          	<td><p>^N</td>
+          	<td><p>Link</td>
+          </tr>
+ <tr>
+          	<td><p>^P</td>
+          	<td><p>&lt;P&gt;</td>
+          </tr>
+ <tr>
+          	<td><p>^U</td>
+          	<td><p>Underline</td>
+          </tr>
+ <tr>
+          	<td><p>^S</td>
+          	<td><p>Save</td>
+          </tr>
+		</table>
+		       
+      </div>
+      
+       <!-- IMAGE -->
+      <div id="imagediv" class="panel imagediv" style="display:none;" > 
       <a name="imagespot"></a>
+      	<div id="imagepreviewdiv" style="display:none">
+      		<div onclick="$('#imagepreviewdiv').slideUp(300)" style="width:100%;background-color:red;color:white;text-align:center; border-radius: 8px">Close</div>
+      		<div id="imagepreview"></div>
+      	</div>
         <!--div id="imagesdiv"-->
-          <form id="imagesform">
-            <p>Server path <textarea id="imagepath" cols="70" rows="1">http://www.hyperorg.com/blogger/images</textarea><br>
-              Alt text<textarea id="alttext" cols="70" rows="1"></textarea><br>
-              Caption<textarea id="captiontxt" cols="70" rows="1"></textarea></p>
-            Link to<textarea id="photolinktotxt" cols="70" rows="1"></textarea>
-            <p>width: <textarea id="imagewidth2" cols="3" rows="1"></textarea>
-              height: <textarea id="imageheight" cols="3" rows="1"></textarea>
-              <input id="centerimage" checked="checked" type="checkbox">Center
-              Desired width: <textarea id="widthchange" cols="3" rows="1"></textarea>
-              <input id="widthchangebutton" onclick="adjustImgSize('width');" value="Adjust Ht"
-                type="button">
-              Desired height: <textarea id="heightchange" cols="3" rows="1"></textarea>
-              <input id="widthchangebutton" onclick="adjustImgSize('height');" value="Adjust Wd"
-                type="button"></p>
-            <input onclick="insertimage();" value="Insert image" type="button">
-            <input onclick="clearimage();" value="Clear" type="button"> </form>
-          <form enctype="multipart/form-data" action="uploader.php" method="POST">
+          <div id="imagesform">
+          <table style="border-width: 0;">
+          <tr>
+            <td><p>Server path</td><td><textarea id="imagepath" cols="70" rows="1">http://www.hyperorg.com/blogger/images/</textarea></td></tr>
+            <tr>
+              <td><p>Alt text</td><td><textarea id="alttext" cols="70" rows="1"></textarea></td></tr>
+              <tr>
+              <td><p>Caption</td><td><textarea id="captiontxt" cols="70" rows="1"></textarea></td></tr>
+              <tr>
+            <td><p>Link to</td><td><textarea id="imagelinktotxt" cols="70" rows="1"></textarea>
+            </td></tr>
+            <tr>
+            <td><p>Desired width in pixels</td><td><textarea id="widthchange" cols="3" rows="1"></textarea> [Enter width <u>or</u> height]</td></tr>
+              <tr>
+              <td><p>Desired height in pixels</td><td> <textarea id="heightchange" cols="3" rows="1"></textarea></td></tr>
+             </table>
+              
+                 <!--input onclick="resizeImage()" value="Resize a copy" type="button"--> 
+            
+            <!-- upload image via iframe that inserts doc on server -->
+              
+           <div> <iframe id="imageuploaderiframe" src="http://www.hyperorg.com/blogger/blogdraftpictureuploader.html"></iframe>
+           </div>
+        <!--input type="button" value="insert path" onclick="insertImagePath()" -->
+         <input type="button" value="upload another?" onclick="$('#imageuploaderiframe').attr({'src' : 'http://www.hyperorg.com/blogger/blogdraftpictureuploader.html'})">      
+        <input type="button" value="Verify img" onclick="verifyImage()">
+         
+         <br>       
+            <input onclick="insertimage();" value="Insert image" type="button" style="font-size:32px">
+            <input onclick="clearimage();" value="Clear" type="button"> 
+        
+            </div>
+          
+            
+           <!-- 
+ <form  enctype="multipart/form-data" action="http://hyperorg.com/blogger/php/TESTremote.php" method="POST">
             <input name="MAX_FILE_SIZE" value="100000000" type="hidden">
             <p>Choose a file to upload: <input name="uploadedfile" cols="70" type="file"></p>
-            <input value="Upload File" type="submit"> </form>
+            <input value="Upload the image" type="submit" onsubmit="return addImagePathToPage(f);> </form>
+            
+ -->
+            
+            
+            
+           <!-- 
+ <p> Type "ftpit" to have Keyboard Maestro upload file selected in Finder to hyperorg.com/blogger/images</p>
+            <textarea id="ftptrigger"></textarea>
+            <input type="file" id="fileselector" name="files[]" multiple />
+			<div><span id="imagefileuploading"></span> <span id="imagefilesize"> bytes </span>
+            <input type="button" value="File uploaded?" onclick="doesFileExist()">
+             
         </div>
-      <!--/div --> 
+ -->
+      </div> 
       </div>
         <!-- transoverlay END-->
         
@@ -373,18 +506,17 @@
       
     
       <!---  PREFS -->
+<!-- 
       <div id="prefsdiv" class="prefsdiv" style="display:none">
-        <form id="presform"> <a href="autolinkconfig.html" target="”_blank”"
-            class="tags">Edit
-            autolinks and favorites (in new window)</a> <input value="false" id="autosavecheck"
-            checked="checked"
+        <span id="presform">
+        
+          Auto save: <input value="false" id="autoexpandcheck" checked="checked"
             type="checkbox">
-          Auto save <input value="false" id="autoexpandcheck" checked="checked"
+          Auto expansions: <input value="false" id="includetagscheck" checked="checked"
             type="checkbox">
-          Auto expansions <input value="false" id="includetagscheck" checked="checked"
-            type="checkbox">
-          Include tags </form>
+          Include tags </span>
       </div>
+ -->
 
  
       <!-- ----= TESTING ------->
